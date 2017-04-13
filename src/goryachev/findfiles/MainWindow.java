@@ -7,7 +7,6 @@ import goryachev.fx.FX;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
-import goryachev.fx.obsolete.FxInvalidationListener;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -71,7 +70,7 @@ public class MainWindow
 		
 		// preferences
 		bind("HSPLIT", horizontalSplit);
-		new FxInvalidationListener(horizontalSplit, true, this::updateSplit);
+		FX.listen(this::updateSplit, true, horizontalSplit);
 
 		// debugging
 		FxDump.attach(this);
