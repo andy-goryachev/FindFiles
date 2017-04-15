@@ -36,7 +36,7 @@ public class StyledTextModel
 	}
 	
 	
-	public void setLines(Collection<Line> newLines)
+	public void setLines(Collection<StyledTextModel.Line> newLines)
 	{
 		if(newLines == null)
 		{

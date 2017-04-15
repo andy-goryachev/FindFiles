@@ -22,6 +22,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 
 
 /**
@@ -49,6 +50,7 @@ public class MainPane
 		sourceField.setMinWidth(120);
 		
 		searchField = new TextField();
+		searchField.addEventHandler(KeyEvent.KEY_PRESSED, (ev) -> handleSearchKeyPress(ev));
 		
 		searchButton = new CButton("Search", searchAction);
 		
@@ -95,6 +97,18 @@ public class MainPane
 	{
 		boolean hor = horizontalSplit.get();
 		split.setOrientation(hor ? Orientation.HORIZONTAL : Orientation.VERTICAL);
+	}
+	
+	
+	protected void handleSearchKeyPress(KeyEvent ev)
+	{
+		switch(ev.getCode())
+		{
+		case ENTER:
+			search();
+			ev.consume();
+			break;
+		}
 	}
 	
 	

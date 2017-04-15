@@ -1,7 +1,7 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.findfiles;
 import goryachev.common.util.CList;
-import goryachev.findfiles.StyledTextModel.Line;
+import goryachev.findfiles.StyledTextModel;
 import goryachev.findfiles.search.FileEntry;
 import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
@@ -63,9 +63,9 @@ public class DetailPane
 	}
 
 
-	private CList<Line> readFile(File f)
+	private CList<StyledTextModel.Line> readFile(File f)
 	{
-		CList<Line> rv = new CList();
+		CList<StyledTextModel.Line> rv = new CList();
 		
 		return rv;
 	}
