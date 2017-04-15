@@ -1,5 +1,5 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package research.fx;
+package goryachev.fx;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

@@ -1,6 +1,7 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package research.fx;
+package goryachev.fx.table;
 import goryachev.fx.Converters;
+import goryachev.fx.FxFormatter;
 import java.util.function.Function;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;

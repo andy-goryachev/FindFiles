@@ -13,6 +13,8 @@ import goryachev.fx.CComboBox;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.FxCtl;
+import goryachev.fx.FxDateFormatter;
+import goryachev.fx.FxDecimalFormatter;
 import goryachev.fx.FxThread;
 import goryachev.fx.table.FxTable;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -20,8 +22,6 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
-import research.fx.FxDateFormatter;
-import research.fx.FxDecimalFormatter;
 
 
 /**
