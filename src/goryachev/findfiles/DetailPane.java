@@ -1,8 +1,8 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.findfiles;
 import goryachev.common.util.CList;
-import goryachev.findfiles.StyledTextModel;
 import goryachev.findfiles.search.FileEntry;
+import goryachev.findfiles.search.NaiveFileReader;
 import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
@@ -19,6 +19,7 @@ public class DetailPane
 	public static final CssStyle PANE = new CssStyle("DetailPane_PANE");
 	public final StyledTextModel model;
 	public final FxEditor textField;
+	protected NaiveFileReader reader;
 	
 	
 	public DetailPane()
@@ -36,29 +37,32 @@ public class DetailPane
 	}
 	
 	
+	public void closeReader()
+	{
+		if(reader != null)
+		{
+			reader.close();
+			reader = null;
+		}
+	}
+	
+	
 	public void clear()
 	{
-		// TODO close file
+		closeReader();
 		model.clear();
 	}
 
 
 	public void setFileEntry(FileEntry f)
 	{
-		// TODO close existing file
+		closeReader();
+		clear();
 		
-		if(f == null)
+		if(f != null)
 		{
-			clear();
-		}
-		else
-		{
-			// TODO read file in a cancellable bg thread;
-			// try to determine if a known binary file
-			// create a bunch of lines
-			// if binary is detected in a text file, default to binary
-			CList<StyledTextModel.Line> lines = readFile(f.file);
-			model.setLines(lines);
+			reader = new NaiveFileReader(f.file);
+			reader.readFile((lines) -> model.setLines(lines));
 		}
 	}
 
