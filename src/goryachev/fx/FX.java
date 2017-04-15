@@ -9,6 +9,7 @@ import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -810,5 +811,11 @@ public final class FX
 		{
 			handler.run();
 		}
+	}
+
+
+	public static <T> ObservableList<T> observableArrayList()
+	{
+		return FXCollections.observableArrayList();
 	}
 }
