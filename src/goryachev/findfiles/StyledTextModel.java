@@ -10,9 +10,9 @@ import javafx.scene.text.Text;
 
 
 /**
- * DetailModel.
+ * Styled Text FxEditor Model.
  */
-public class DetailModel
+public class StyledTextModel
 	extends FxEditorModel
 {
 	private final CList<Line> lines = new CList();
@@ -20,7 +20,7 @@ public class DetailModel
 	private static final Insets LINE_INSETS = new Insets(0, 0, 0, 20);
 	
 	
-	public DetailModel()
+	public StyledTextModel()
 	{
 	}
 	

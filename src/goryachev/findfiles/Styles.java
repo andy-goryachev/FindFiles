@@ -22,7 +22,7 @@ public class Styles
 			(
 				prop("-fx-accent", Color.RED),
 				prop("-fx-focus-color", Color.RED),
-				prop("-fx-faint-focus-color", Color.BLACK)
+				prop("-fx-faint-focus-color", Color.RED) // FIX
 			),
 			
 			new Selector(".text").defines

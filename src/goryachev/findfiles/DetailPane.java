@@ -14,7 +14,7 @@ public class DetailPane
 	extends CPane
 {
 	public static final CssStyle PANE = new CssStyle("DetailPane_PANE");
-	public final DetailModel model;
+	public final StyledTextModel model;
 	public final FxEditor textField;
 	
 	
@@ -22,7 +22,7 @@ public class DetailPane
 	{
 		FX.style(this, PANE);
 		
-		model = new DetailModel();
+		model = new StyledTextModel();
 		
 		textField = new FxEditor(model);
 		textField.setDisplayCaret(false);
