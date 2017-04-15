@@ -79,7 +79,7 @@ public class MainPane
 		
 		FX.listen(this::updateSplit, true, horizontalSplit);
 		
-		FX.later(this::loadLocations);
+		FX.later(this::initLocations);
 	}
 	
 	
@@ -90,27 +90,37 @@ public class MainPane
 	}
 	
 	
-	protected void loadLocations()
+	protected void initLocations()
 	{
 		new FxThread("load locations")
 		{
+			private Locations loc;
+			
 			protected void process() throws Throwable
 			{
-				String s = CKit.readString(MainPane.class, "test.json");
-				Locations loc = new GsonBuilder().registerTypeAdapter(ObservableList.class, new InstanceCreator()
-				{
-					public Object createInstance(Type type)
-					{
-						return FX.observableArrayList();
-					}
-				}).create().fromJson(s, Locations.class);
-				D.describe(loc);
+				loc = loadLocations();
 			}
 
 			protected void processSuccess()
 			{
+				setLocations(loc);
 			}
 		}.start();
+	}
+	
+	
+	protected void setLocations(Locations loc)
+	{
+		sourceField.setItems(loc.locations);
+		
+		D.print(Locations.toJson(loc));
+	}
+	
+	
+	protected Locations loadLocations() throws Exception
+	{
+		String s = CKit.readString(MainPane.class, "test.json");
+		return Locations.fromJson(s);
 	}
 	
 	

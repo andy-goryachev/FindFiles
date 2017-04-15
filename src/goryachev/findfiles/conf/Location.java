@@ -12,10 +12,16 @@ import javafx.collections.ObservableList;
 @KeepAll
 public class Location
 {
-	private ObservableList<File> directories = FX.observableArrayList();
+	public final ObservableList<File> directories = FX.observableArrayList();
 	
 	
 	public Location()
 	{
+	}
+	
+	
+	public String toString()
+	{
+		return directories.toString();
 	}
 }
