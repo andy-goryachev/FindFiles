@@ -1,9 +1,11 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.findfiles;
 import goryachev.common.util.CKit;
+import goryachev.common.util.CList;
 import goryachev.common.util.D;
+import goryachev.findfiles.conf.Location;
 import goryachev.findfiles.conf.Locations;
-import goryachev.findfiles.search.FileEntry;
+import goryachev.findfiles.search.Search;
 import goryachev.fx.CAction;
 import goryachev.fx.CButton;
 import goryachev.fx.CComboBox;
@@ -11,14 +13,14 @@ import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.FxThread;
 import goryachev.fx.table.FxTable;
-import java.lang.reflect.Type;
-import com.google.gson.GsonBuilder;
-import com.google.gson.InstanceCreator;
+import java.io.File;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
+import research.fx.FxDateFormatter;
+import research.fx.FxDecimalFormatter;
 
 
 /**
@@ -31,10 +33,13 @@ public class MainPane
 	public final CComboBox sourceField;
 	public final TextField searchField;
 	public final CButton searchButton;
-	public final FxTable<FileEntry> table;
+	public final FxTable<File> table;
 	public final DetailPane detailPane;
 	public final SplitPane split;
-	protected final SimpleBooleanProperty horizontalSplit = new SimpleBooleanProperty(false);
+	public final SimpleBooleanProperty horizontalSplit = new SimpleBooleanProperty(false);
+	protected volatile Search search;
+	protected FxDecimalFormatter numberFormat = new FxDecimalFormatter("#,##0");
+	protected FxDateFormatter dateFormat = new FxDateFormatter("yyyy/MM/dd HH:mm:ss");
 	
 	
 	public MainPane()
@@ -62,10 +67,10 @@ public class MainPane
 		p.add(3, 0, searchButton);
 		
 		table = new FxTable<>();
-		table.addColumn("File");
-		table.addColumn("Path");
-		table.addColumn("Size");
-		table.addColumn("Last Modified");
+		table.addColumn("File").setRenderer((f) -> f == null ? null : FX.label(f.getName()));
+		table.addColumn("Path").setRenderer((f) -> f == null ? null : FX.label(f.getPath()));
+		table.addColumn("Size").setRenderer((f) -> f == null ? null : FX.label(Pos.CENTER_RIGHT, numberFormat.format(f.length())));
+		table.addColumn("Last Modified").setRenderer((f) -> f == null ? null : FX.label(dateFormat.format(f.lastModified())));
 		table.setResizePolicyConstrained();
 		
 		detailPane = new DetailPane();
@@ -112,6 +117,7 @@ public class MainPane
 	protected void setLocations(Locations loc)
 	{
 		sourceField.setItems(loc.locations);
+		sourceField.selectFirst();
 		
 		D.print(Locations.toJson(loc));
 	}
@@ -126,6 +132,34 @@ public class MainPane
 	
 	protected void search()
 	{
+		if(search != null)
+		{
+			search.cancel();
+		}
 		
+		table.clearItems();
+		
+		String query = searchField.getText();
+		Location loc = (Location)sourceField.getSelectionModel().getSelectedItem();
+		search = new Search(this, loc, query);
+		search.start();
+	}
+
+
+	public void finishedSearch(Search s, CList<File> found)
+	{
+		if(search == s)
+		{
+			FX.later(() ->
+			{
+				if(search == s)
+				{
+					search = null;
+					// TODO clear searching boolean
+					
+					table.setItems(found);
+				}
+			});
+		}
 	}
 }

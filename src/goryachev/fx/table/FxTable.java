@@ -116,6 +116,12 @@ public class FxTable<T>
 	}
 	
 	
+	public void clearItems()
+	{
+		table.getItems().clear();
+	}
+	
+	
 	public void setResizePolicyConstrained()
 	{
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 public class Location
 {
 	public final ObservableList<File> directories = FX.observableArrayList();
+	public String filterSpec;
 	
 	
 	public Location()
