@@ -21,19 +21,17 @@ public class Search
 {
 	protected final MainPane parent;
 	protected final Location location;
-	protected final String expression;
+	protected final ZQuery query;
 	protected final String filterSpec;
 	protected final CList<FileEntry> found = new CList();
 	protected RFileFilter filter;
-	protected ZQuery query;
 	
 	
-	public Search(MainPane p, Location loc, String expr)
+	public Search(MainPane p, Location loc, ZQuery query)
 	{
 		this.parent = p;
 		this.location = loc;
-		this.expression = expr;
-		// TODO filters
+		this.query = query;
 		this.filterSpec = loc.filterSpec;
 	}
 	
@@ -43,7 +41,6 @@ public class Search
 		try
 		{
 			filter = RFileFilter.parse(location.filterSpec);
-			query = new ZQuery(expression);
 
 			CList<File> dirs = new CList(location.directories);
 			for(File f: dirs)
@@ -96,10 +93,10 @@ public class Search
 
 	protected boolean searchFile(File f)
 	{
-		NaiveFileReader rd = new NaiveFileReader(f);
+		NaiveFileReader rd = new NaiveFileReader(f, query);
 		try
 		{
-			return rd.contains(query);
+			return rd.contains();
 		}
 		finally
 		{

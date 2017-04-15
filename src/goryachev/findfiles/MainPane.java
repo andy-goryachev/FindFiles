@@ -3,6 +3,7 @@ package goryachev.findfiles;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.D;
+import goryachev.common.util.text.ZQuery;
 import goryachev.findfiles.conf.Location;
 import goryachev.findfiles.conf.Locations;
 import goryachev.findfiles.search.FileEntry;
@@ -40,6 +41,7 @@ public class MainPane
 	public final SplitPane split;
 	public final SimpleBooleanProperty horizontalSplit = new SimpleBooleanProperty(false);
 	protected volatile Search search;
+	protected ZQuery query;
 	protected FxDecimalFormatter numberFormat = new FxDecimalFormatter("#,##0");
 	protected FxDateFormatter dateFormat = new FxDateFormatter("yyyy/MM/dd HH:mm:ss");
 	
@@ -156,7 +158,9 @@ public class MainPane
 		
 		table.clearItems();
 		
-		String query = searchField.getText();
+		String expr = searchField.getText();
+		query = new ZQuery(expr);
+		
 		Location loc = (Location)sourceField.getSelectionModel().getSelectedItem();
 		search = new Search(this, loc, query);
 		search.start();
@@ -184,6 +188,6 @@ public class MainPane
 	protected void updateSelection()
 	{
 		FileEntry f = table.getSelectedItem();
-		detailPane.setFileEntry(f);
+		detailPane.setFileEntry(f, query);
 	}
 }

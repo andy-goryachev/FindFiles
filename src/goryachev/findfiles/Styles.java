@@ -49,6 +49,11 @@ public class Styles
 				fontFamily("monospace")
 			),
 			
+			new Selector(DetailPane.HIGHLIGHT).defines
+			(
+//				backgroundColor(Color.YELLOW)
+			),
+			
 			// common fx styles
 			new CommonStyles()
 		);
