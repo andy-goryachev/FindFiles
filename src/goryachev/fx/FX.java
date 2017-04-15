@@ -145,6 +145,9 @@ public final class FX
 				case FOCUSABLE:
 					n.setFocusTraversable(true);
 					break;
+				case FORCE_MAX_WIDTH:
+					n.setMaxWidth(Double.MAX_VALUE);
+					break;
 				case FORCE_MIN_HEIGHT:
 					n.setMinHeight(Control.USE_PREF_SIZE);
 					break;

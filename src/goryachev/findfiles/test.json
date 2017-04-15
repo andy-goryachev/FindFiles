@@ -6,7 +6,7 @@
 			[
 				"."
 			],
-			"filterSpec": "-hidden"
+			"filterSpec": "-hidden\n-system\n- *.class"
 		}
 	]
 }

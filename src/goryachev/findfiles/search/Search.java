@@ -22,7 +22,7 @@ public class Search
 	protected final Location location;
 	protected final String query;
 	protected final String filterSpec;
-	protected final CList<File> found = new CList();
+	protected final CList<FileEntry> found = new CList();
 	protected RFileFilter filter;
 	
 	
@@ -82,16 +82,19 @@ public class Search
 			}
 			else
 			{
-				searchFile(f);
+				if(searchFile(f))
+				{
+					found.add(new FileEntry(f, path));
+				}
 			}
 		}
 	}
 
 
-	protected void searchFile(File f)
+	protected boolean searchFile(File f)
 	{
 		// TODO search content
 		
-		found.add(f);
+		return true;
 	}
 }

@@ -5,12 +5,14 @@ import goryachev.common.util.CList;
 import goryachev.common.util.D;
 import goryachev.findfiles.conf.Location;
 import goryachev.findfiles.conf.Locations;
+import goryachev.findfiles.search.FileEntry;
 import goryachev.findfiles.search.Search;
 import goryachev.fx.CAction;
 import goryachev.fx.CButton;
 import goryachev.fx.CComboBox;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
+import goryachev.fx.FxCtl;
 import goryachev.fx.FxThread;
 import goryachev.fx.table.FxTable;
 import java.io.File;
@@ -33,7 +35,7 @@ public class MainPane
 	public final CComboBox sourceField;
 	public final TextField searchField;
 	public final CButton searchButton;
-	public final FxTable<File> table;
+	public final FxTable<FileEntry> table;
 	public final DetailPane detailPane;
 	public final SplitPane split;
 	public final SimpleBooleanProperty horizontalSplit = new SimpleBooleanProperty(false);
@@ -66,10 +68,11 @@ public class MainPane
 		p.add(2, 0, searchField);
 		p.add(3, 0, searchButton);
 		
+		// FIX column sorting is incorrect
 		table = new FxTable<>();
 		table.addColumn("File").setRenderer((f) -> f == null ? null : FX.label(f.getName()));
 		table.addColumn("Path").setRenderer((f) -> f == null ? null : FX.label(f.getPath()));
-		table.addColumn("Size").setRenderer((f) -> f == null ? null : FX.label(Pos.CENTER_RIGHT, numberFormat.format(f.length())));
+		table.addColumn("Size").setRenderer((f) -> f == null ? null : FX.label(Pos.CENTER_RIGHT, FxCtl.FORCE_MAX_WIDTH, numberFormat.format(f.length())));
 		table.addColumn("Last Modified").setRenderer((f) -> f == null ? null : FX.label(dateFormat.format(f.lastModified())));
 		table.setResizePolicyConstrained();
 		
@@ -146,7 +149,7 @@ public class MainPane
 	}
 
 
-	public void finishedSearch(Search s, CList<File> found)
+	public void finishedSearch(Search s, CList<FileEntry> found)
 	{
 		if(search == s)
 		{
