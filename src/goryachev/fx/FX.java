@@ -791,6 +791,13 @@ public final class FX
 	
 	
 	/** adds an invalidation listener to an observable */
+	public static void listen(Runnable handler, Observable prop)
+	{
+		prop.addListener((src) -> handler.run());
+	}
+	
+	
+	/** adds an invalidation listener to an observable */
 	public static void listen(Runnable handler, boolean fireImmediately, Observable prop)
 	{
 		prop.addListener((src) -> handler.run());
@@ -798,6 +805,16 @@ public final class FX
 		if(fireImmediately)
 		{
 			handler.run();
+		}
+	}
+	
+	
+	/** adds an invalidation listener to multiple observables */
+	public static void listen(Runnable handler, Observable ... props)
+	{
+		for(Observable prop: props)
+		{
+			prop.addListener((src) -> handler.run());
 		}
 	}
 	

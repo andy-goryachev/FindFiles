@@ -1,5 +1,8 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.findfiles;
+import goryachev.common.util.CList;
+import goryachev.findfiles.StyledTextModel.Line;
+import goryachev.findfiles.search.FileEntry;
 import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
@@ -31,16 +34,39 @@ public class DetailPane
 		
 		setCenter(textField);
 	}
-
-
-	public void setFile(File f)
+	
+	
+	public void clear()
 	{
-		model.setFile(f);
+		// TODO close file
+		model.clear();
 	}
 
 
-	public void clear()
+	public void setFileEntry(FileEntry f)
 	{
-		model.setFile(null);
+		// TODO close existing file
+		
+		if(f == null)
+		{
+			clear();
+		}
+		else
+		{
+			// TODO read file in a cancellable bg thread;
+			// try to determine if a known binary file
+			// create a bunch of lines
+			// if binary is detected in a text file, default to binary
+			CList<StyledTextModel.Line> lines = readFile(f.file);
+			model.setLines(lines);
+		}
+	}
+
+
+	private CList<Line> readFile(File f)
+	{
+		CList<Line> rv = new CList();
+		
+		return rv;
 	}
 }

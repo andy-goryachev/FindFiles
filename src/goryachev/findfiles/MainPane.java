@@ -15,7 +15,6 @@ import goryachev.fx.FX;
 import goryachev.fx.FxCtl;
 import goryachev.fx.FxThread;
 import goryachev.fx.table.FxTable;
-import java.io.File;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -75,6 +74,7 @@ public class MainPane
 		table.addColumn("Size").setRenderer((f) -> f == null ? null : FX.label(Pos.CENTER_RIGHT, FxCtl.FORCE_MAX_WIDTH, numberFormat.format(f.length())));
 		table.addColumn("Last Modified").setRenderer((f) -> f == null ? null : FX.label(dateFormat.format(f.lastModified())));
 		table.setResizePolicyConstrained();
+		FX.listen(this::updateSelection, table.getSelectedItems());
 		
 		detailPane = new DetailPane();
 		
@@ -164,5 +164,12 @@ public class MainPane
 				}
 			});
 		}
+	}
+	
+	
+	protected void updateSelection()
+	{
+		FileEntry f = table.getSelectedItem();
+		detailPane.setFileEntry(f);
 	}
 }

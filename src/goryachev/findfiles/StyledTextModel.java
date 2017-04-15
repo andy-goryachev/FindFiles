@@ -1,12 +1,9 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.findfiles;
 import goryachev.common.util.CList;
-import goryachev.fx.edit.CTextFlow;
 import goryachev.fx.edit.FxEditorModel;
-import java.io.File;
-import javafx.geometry.Insets;
+import java.util.Collection;
 import javafx.scene.layout.Region;
-import javafx.scene.text.Text;
 
 
 /**
@@ -15,9 +12,16 @@ import javafx.scene.text.Text;
 public class StyledTextModel
 	extends FxEditorModel
 {
+	public static interface Line
+	{
+		public String getPlainText();
+		
+		public Region getDecoratedLine();
+	}
+	
+	//
+	
 	private final CList<Line> lines = new CList();
-	private static final Insets HEADING_INSETS = new Insets(0, 0, 0, 0);
-	private static final Insets LINE_INSETS = new Insets(0, 0, 0, 20);
 	
 	
 	public StyledTextModel()
@@ -25,40 +29,22 @@ public class StyledTextModel
 	}
 	
 	
-	public void setFile(File f)
+	public void clear()
 	{
-		if(f == null)
+		lines.clear();
+		fireAllChanged();
+	}
+	
+	
+	public void setLines(Collection<Line> newLines)
+	{
+		if(newLines == null)
 		{
 			lines.clear();
 		}
 		else
 		{
-//			CList<String> names = rep.getSectionNames();
-//			CSorter.sort(names);
-//			
-//			CList<Line> rv = new CList<>();
-//			for(String k: names)
-//			{
-//				Object x = rep.getSection(k);
-//				if(x != null)
-//				{
-//					rv.add(new Line(true, k));
-//					
-//					if(x instanceof String)
-//					{
-//						rv.add(new Line(false, (String)x));
-//					}
-//					else if(x instanceof String[])
-//					{
-//						for(String s: (String[])x)
-//						{
-//							rv.add(new Line(false, s));
-//						}
-//					}
-//				}
-//			}
-//			
-//			lines.setAll(rv);
+			lines.setAll(newLines);
 		}
 		
 		fireAllChanged();
@@ -85,37 +71,12 @@ public class StyledTextModel
 
 	public String getPlainText(int ix)
 	{
-		return getLine(ix).text;
+		return getLine(ix).getPlainText();
 	}
 
 
 	public Region getDecoratedLine(int ix)
 	{
-		Line line = getLine(ix);
-		
-		Text t = new Text(line.text);
-//		t.setFill(ColorScheme.getDetailColor(line.heading));
-		
-		CTextFlow flow = new CTextFlow();
-		flow.add(t);
-		flow.setPadding(line.heading ? HEADING_INSETS : LINE_INSETS);
-		return flow;
-	}
-	
-	
-	//
-	
-	
-	protected static class Line
-	{
-		public final boolean heading;
-		public final String text;
-		
-		
-		public Line(boolean heading, String text)
-		{
-			this.heading = heading;
-			this.text = text;
-		}
+		return getLine(ix).getDecoratedLine();
 	}
 }
