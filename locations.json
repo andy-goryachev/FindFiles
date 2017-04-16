@@ -1,0 +1,12 @@
+{
+	"locations":
+	[
+		{
+			"directories":
+			[
+				"c:/Projects/"
+			],
+			"filterSpec": "-hidden\n-system\n- *.class\n- *.jar\n- *.zip"
+		}
+	]
+}

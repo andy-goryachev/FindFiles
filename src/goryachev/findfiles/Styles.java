@@ -1,6 +1,7 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.findfiles;
 import goryachev.fx.CommonStyles;
+import goryachev.fx.FX;
 import goryachev.fx.FxStyleSheet;
 import javafx.scene.paint.Color;
 
@@ -20,9 +21,12 @@ public class Styles
 			// basic styles
 			new Selector(".root").defines
 			(
-				prop("-fx-accent", Color.RED),
-				prop("-fx-focus-color", Color.RED),
-				prop("-fx-faint-focus-color", Color.RED) // FIX
+				// text selection
+				prop("-fx-accent", FX.rgba(0xffff8b, 0.7)),
+				// focus outline
+				prop("-fx-focus-color", FX.rgb(0xff6d00)),
+				// focus glow
+				prop("-fx-faint-focus-color", FX.rgba(0xff6d00, 0.1)) // FIX
 			),
 			
 			new Selector(".text").defines

@@ -51,6 +51,7 @@ public class MainPane
 	{
 		sourceField = new CComboBox();
 		sourceField.setMinWidth(120);
+		sourceField.setPrefWidth(120);
 		
 		searchField = new TextField();
 		searchField.addEventHandler(KeyEvent.KEY_PRESSED, (ev) -> handleSearchKeyPress(ev));

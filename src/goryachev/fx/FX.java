@@ -384,6 +384,16 @@ public final class FX
 		int b = (rgb      ) & 0xff;
 		return Color.rgb(r, g, b);
 	}
+	
+	
+	/** Creates Color from an RGB value + alpha. */
+	public static Color rgba(int rgb, double alpha)
+	{
+		int r = (rgb >> 16) & 0xff;
+		int g = (rgb >>  8) & 0xff;
+		int b = (rgb      ) & 0xff;
+		return Color.rgb(r, g, b, alpha);
+	}
 
 
 	public static boolean contains(Node n, double screenx, double screeny)
