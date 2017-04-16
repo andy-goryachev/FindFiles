@@ -6,6 +6,8 @@ Find Text In Files // WORK IN PROGRESS
 
 ## Why
 
+A simple utility to search for text in folders.
+
 Also, this is a test bed for 
 [FxEditor](https://github.com/andy-goryachev/FxEditor),
 a super-fast text editor that works with very large texts. 
