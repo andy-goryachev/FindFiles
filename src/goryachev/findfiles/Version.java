@@ -7,5 +7,5 @@ package goryachev.findfiles;
  */
 public class Version
 {
-	public static final String VERSION = "0.00.00";
+	public static final String VERSION = "0.00.01";
 }

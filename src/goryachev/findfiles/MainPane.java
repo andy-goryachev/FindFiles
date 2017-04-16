@@ -18,6 +18,7 @@ import goryachev.fx.FxDateFormatter;
 import goryachev.fx.FxDecimalFormatter;
 import goryachev.fx.FxThread;
 import goryachev.fx.table.FxTable;
+import java.io.File;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -144,7 +145,11 @@ public class MainPane
 	
 	protected Locations loadLocations() throws Exception
 	{
-		String s = CKit.readString(MainPane.class, "test.json");
+		String s = CKit.readStringQuiet(new File("./locations.json"));
+		if(s == null)
+		{
+			s = CKit.readString(MainPane.class, "test.json");
+		}
 		return Locations.fromJson(s);
 	}
 	

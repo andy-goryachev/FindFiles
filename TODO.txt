@@ -1,7 +1,6 @@
 TODO
 
-- search file
-- styled lines
 - text field style: remove round corners, faint focus color
 - styles: replace red with material color
 - fix table sorting: value getter, set sorter/collator
+- add highlight to editor
