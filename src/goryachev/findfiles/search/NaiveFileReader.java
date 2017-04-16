@@ -3,6 +3,7 @@ package goryachev.findfiles.search;
 import goryachev.common.io.CReader;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
+import goryachev.common.util.CancelledException;
 import goryachev.common.util.Log;
 import goryachev.common.util.text.QuerySegment;
 import goryachev.common.util.text.ZQuery;
@@ -70,6 +71,10 @@ public class NaiveFileReader
 				CKit.close(rd);
 			}
 			return rv;
+		}
+		catch(CancelledException e)
+		{
+			return false;
 		}
 		catch(Exception e)
 		{

@@ -23,6 +23,7 @@ public class Styles
 			(
 				// text selection
 				prop("-fx-accent", FX.rgba(0xffff8b, 0.7)),
+				prop("-fx-highlight-text-fill", Color.BLACK), //"-fx-dark-text-color"),
 				// focus outline
 				prop("-fx-focus-color", FX.rgb(0xff6d00)),
 				// focus glow
@@ -59,7 +60,17 @@ public class Styles
 			),
 			
 			// common fx styles
-			new CommonStyles()
+			new CommonStyles(),
+			
+			// fix text selection colors
+			new Selector(".text-input").defines
+			(
+				new Selector(FOCUSED).defines
+				(
+					textFill(Color.BLACK),
+					prop("-fx-highlight-text-fill", Color.BLACK)
+				)
+			)
 		);
 	}
 }
