@@ -1,6 +1,5 @@
 TODO
 
-- searching indicator
 - text field style: remove round corners, faint focus color
 - fix table sorting: value getter, set sorter/collator
-- add highlight to editor
+- add highlight to model

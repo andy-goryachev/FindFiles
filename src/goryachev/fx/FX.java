@@ -848,4 +848,15 @@ public final class FX
 	{
 		return FXCollections.observableArrayList();
 	}
+
+
+	/** creates a fixed spacer */
+	public static Region spacer(double size)
+	{
+		Region r = new Region();
+		r.setMinSize(size, size);
+		r.setMaxSize(size, size);
+		r.setPrefSize(size, size);
+		return r;
+	}
 }

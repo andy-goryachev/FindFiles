@@ -17,11 +17,13 @@ import goryachev.fx.FxCtl;
 import goryachev.fx.FxDateFormatter;
 import goryachev.fx.FxDecimalFormatter;
 import goryachev.fx.FxThread;
+import goryachev.fx.icon.ProcessingIcon;
 import goryachev.fx.table.FxTable;
 import java.io.File;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -37,10 +39,12 @@ public class MainPane
 	public final CComboBox sourceField;
 	public final TextField searchField;
 	public final CButton searchButton;
+	public final Label progressField;
 	public final FxTable<FileEntry> table;
 	public final DetailPane detailPane;
 	public final SplitPane split;
 	public final SimpleBooleanProperty horizontalSplit = new SimpleBooleanProperty(false);
+	protected final SimpleBooleanProperty searching = new SimpleBooleanProperty(false);
 	protected volatile Search search;
 	protected ZQuery query;
 	protected FxDecimalFormatter numberFormat = new FxDecimalFormatter("#,##0");
@@ -58,6 +62,8 @@ public class MainPane
 		
 		searchButton = new CButton("Search", searchAction);
 		
+		progressField = new Label();
+		
 		CPane p = new CPane();
 		p.setPadding(2);
 		p.setHGap(10);
@@ -65,13 +71,15 @@ public class MainPane
 		(
 			CPane.PREF,
 			CPane.PREF,
+			CPane.PREF,
 			CPane.FILL,
 			CPane.PREF
 		);
 		p.add(0, 0, FX.label("Find in:"));
 		p.add(1, 0, sourceField);
-		p.add(2, 0, searchField);
-		p.add(3, 0, searchButton);
+		p.add(2, 0, progressField);
+		p.add(3, 0, searchField);
+		p.add(4, 0, searchButton);
 		
 		// FIX column sorting is incorrect
 		table = new FxTable<>();
@@ -92,6 +100,7 @@ public class MainPane
 		setCenter(split);
 		
 		FX.listen(this::updateSplit, true, horizontalSplit);
+		FX.listen(this::updateProgress, true, searching);
 		
 		FX.later(this::initLocations);
 	}
@@ -101,6 +110,21 @@ public class MainPane
 	{
 		boolean hor = horizontalSplit.get();
 		split.setOrientation(hor ? Orientation.HORIZONTAL : Orientation.VERTICAL);
+	}
+	
+	
+	protected void setSearching(boolean on)
+	{
+		searching.set(on);
+		// TODO table placeholder
+	}
+	
+	
+	protected void updateProgress()
+	{
+		boolean on = searching.get();
+		progressField.setGraphic(on ? ProcessingIcon.create(25) : FX.spacer(25));
+		table.setPlaceholder(on ? "Searching..." : "No content in table");
 	}
 	
 	
@@ -162,6 +186,7 @@ public class MainPane
 			search.cancel();
 		}
 		
+		setSearching(true);
 		table.clearItems();
 		
 		String expr = searchField.getText();
@@ -182,7 +207,7 @@ public class MainPane
 				if(search == s)
 				{
 					search = null;
-					// TODO clear searching boolean
+					setSearching(false);
 					
 					table.setItems(found);
 				}
