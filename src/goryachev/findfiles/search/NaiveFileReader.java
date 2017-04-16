@@ -10,13 +10,13 @@ import goryachev.common.util.text.ZQuery;
 import goryachev.findfiles.DetailPane;
 import goryachev.findfiles.StyledTextModel;
 import goryachev.fx.FX;
+import goryachev.fx.edit.CTextFlow;
 import java.io.Closeable;
 import java.io.File;
 import java.util.function.Consumer;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 
 
 /**
@@ -147,7 +147,7 @@ public class NaiveFileReader
 			public Region getDecoratedLine()
 			{
 				Text t = new Text(text);
-				TextFlow f = new TextFlow(t);
+				CTextFlow f = new CTextFlow(t);
 				return f;
 			}
 		};
@@ -167,7 +167,7 @@ public class NaiveFileReader
 
 			public Region getDecoratedLine()
 			{
-				TextFlow f = new TextFlow();
+				CTextFlow f = new CTextFlow();
 				int start = 0;
 				int len = text.length();
 				
