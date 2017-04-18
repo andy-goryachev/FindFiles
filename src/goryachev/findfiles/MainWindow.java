@@ -35,6 +35,8 @@ public class MainWindow
 
 		// preferences
 		bind("HSPLIT", pane.horizontalSplit);
+		
+		FX.later(() -> pane.searchField.requestFocus());
 
 		// debugging
 		FxDump.attach(this);

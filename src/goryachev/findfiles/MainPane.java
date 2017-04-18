@@ -63,7 +63,7 @@ public class MainPane
 		progressField = new Label();
 		
 		CPane p = new CPane();
-		p.setPadding(2);
+		p.setPadding(2, 10);
 		p.setHGap(10);
 		p.addColumns
 		(
@@ -73,7 +73,7 @@ public class MainPane
 			CPane.FILL,
 			CPane.PREF
 		);
-		p.add(0, 0, FX.label("Find in:"));
+		p.add(0, 0, FX.label("Source:"));
 		p.add(1, 0, sourceField);
 		p.add(2, 0, progressField);
 		p.add(3, 0, searchField);
