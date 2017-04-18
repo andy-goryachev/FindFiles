@@ -2,7 +2,6 @@
 package goryachev.findfiles;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
-import goryachev.common.util.D;
 import goryachev.common.util.text.ZQuery;
 import goryachev.findfiles.conf.Location;
 import goryachev.findfiles.conf.Locations;
@@ -13,7 +12,6 @@ import goryachev.fx.CButton;
 import goryachev.fx.CComboBox;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
-import goryachev.fx.FxCtl;
 import goryachev.fx.FxDateFormatter;
 import goryachev.fx.FxDecimalFormatter;
 import goryachev.fx.FxThread;
@@ -81,11 +79,10 @@ public class MainPane
 		p.add(3, 0, searchField);
 		p.add(4, 0, searchButton);
 		
-		// FIX column sorting is incorrect
 		table = new FxTable<>();
-		table.addColumn("File").setRenderer((f) -> f == null ? null : FX.label(f.getName()));
-		table.addColumn("Path").setRenderer((f) -> f == null ? null : FX.label(f.getPath()));
-		table.addColumn("Size").setRenderer((f) -> f == null ? null : FX.label(Pos.CENTER_RIGHT, FxCtl.FORCE_MAX_WIDTH, numberFormat.format(f.length())));
+		table.addColumn("File").setConverter((f) -> f.getName());
+		table.addColumn("Path").setConverter((f) -> f.getPath());
+		table.addColumn("Size").setConverter((f) -> numberFormat.format(f.length())).setAlignment(Pos.CENTER_RIGHT);
 		table.addColumn("Last Modified").setRenderer((f) -> f == null ? null : FX.label(dateFormat.format(f.lastModified())));
 		table.setResizePolicyConstrained();
 		FX.listen(this::updateSelection, table.getSelectedItems());
@@ -116,7 +113,6 @@ public class MainPane
 	protected void setSearching(boolean on)
 	{
 		searching.set(on);
-		// TODO table placeholder
 	}
 	
 	
@@ -163,11 +159,10 @@ public class MainPane
 	{
 		sourceField.setItems(loc.locations);
 		sourceField.selectFirst();
-		
-		D.print(Locations.toJson(loc));
 	}
 	
-	
+
+	// TODO settings
 	protected Locations loadLocations() throws Exception
 	{
 		String s = CKit.readStringQuiet(new File("./locations.json"));
