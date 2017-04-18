@@ -16,7 +16,6 @@ public class DetailPane
 	extends CPane
 {
 	public static final CssStyle PANE = new CssStyle("DetailPane_PANE");
-	public static final CssStyle HIGHLIGHT = new CssStyle("HIGHLIGHT");
 
 	public final StyledTextModel model;
 	public final FxEditor textField;

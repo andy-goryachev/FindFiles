@@ -4,18 +4,17 @@ import goryachev.common.io.CReader;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.CancelledException;
+import goryachev.common.util.ElasticIntArray;
 import goryachev.common.util.Log;
 import goryachev.common.util.text.QuerySegment;
 import goryachev.common.util.text.ZQuery;
-import goryachev.findfiles.DetailPane;
 import goryachev.findfiles.StyledTextModel;
-import goryachev.fx.FX;
+import goryachev.findfiles.TextFlowWithHighlights;
 import goryachev.fx.edit.CTextFlow;
 import java.io.Closeable;
 import java.io.File;
 import java.util.function.Consumer;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 
@@ -146,9 +145,7 @@ public class NaiveFileReader
 
 			public Region getDecoratedLine()
 			{
-				Text t = new Text(text);
-				CTextFlow f = new CTextFlow(t);
-				return f;
+				return new CTextFlow(new Text(text));
 			}
 		};
 	}
@@ -167,7 +164,8 @@ public class NaiveFileReader
 
 			public Region getDecoratedLine()
 			{
-				CTextFlow f = new CTextFlow();
+				ElasticIntArray a = new ElasticIntArray();
+				
 				int start = 0;
 				int len = text.length();
 				
@@ -189,33 +187,15 @@ public class NaiveFileReader
 						}
 						else
 						{
-							if(ix > start)
-							{
-								String s = text.substring(start, ix);
-								Text t = new Text(s);
-								f.getChildren().add(t);
-								start = ix;
-							}
-							
 							String s = text.substring(start, start + seg.length());
+							a.add(ix);
 							start = ix + seg.length();
-							Text t = new Text(s);
-							// FIX need to add a highlight to text flow
-							// because a) Text has no background property
-							// and b) Text might be on several lines
-							t.setFill(Color.MAGENTA);
-							FX.style(t, DetailPane.HIGHLIGHT);
-							f.getChildren().add(t);
+							a.add(start);
 						}
 					}
 				}
 				
-				if(start < len)
-				{
-					f.getChildren().add(new Text(text.substring(start)));
-				}
-				
-				return f;
+				return new TextFlowWithHighlights(text, a.toArray());
 			}
 		};
 	}

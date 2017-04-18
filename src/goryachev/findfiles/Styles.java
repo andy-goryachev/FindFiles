@@ -54,7 +54,7 @@ public class Styles
 				fontFamily("monospace")
 			),
 			
-			new Selector(DetailPane.HIGHLIGHT).defines
+			new Selector(TextFlowWithHighlights.HIGHLIGHT).defines
 			(
 //				backgroundColor(Color.YELLOW)
 			),
