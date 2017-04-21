@@ -51,7 +51,8 @@ public final class FX
 	public static final double PI_2 = Math.PI / 2.0;
 	public static final double DEGREES_PER_RADIAN = 180.0 / Math.PI;
 	private static WindowsFx windowsFx = new WindowsFx();
-	
+	private static Text helper;
+
 	
 	public static FxWindow getWindow(Node n)
 	{
@@ -858,5 +859,37 @@ public final class FX
 		r.setMaxSize(size, size);
 		r.setPrefSize(size, size);
 		return r;
+	}
+	
+	
+	// from http://stackoverflow.com/questions/15593287/binding-textarea-height-to-its-content/19717901#19717901
+	public static FxSize getTextBounds(TextArea t, double width)
+	{
+		if(helper == null)
+		{
+			helper = new Text();
+		}
+		
+		String text = t.getText();
+		if(width < 0)
+		{
+			// Note that the wrapping width needs to be set to zero before
+			// getting the text's real preferred width.
+			helper.setWrappingWidth(0);
+		}
+		else
+		{
+			helper.setWrappingWidth(width);
+		}
+		helper.setText(text);
+		helper.setFont(t.getFont());
+		Bounds r = helper.getLayoutBounds();
+		
+		Insets m = t.getInsets();
+		Insets p = t.getPadding();
+		double w = Math.ceil(r.getWidth() + m.getLeft() + m.getRight());
+		double h = Math.ceil(r.getHeight() + m.getTop() + m.getBottom());
+		
+		return new FxSize(w, h);
 	}
 }
