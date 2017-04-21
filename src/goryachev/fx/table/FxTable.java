@@ -94,6 +94,7 @@ public class FxTable<T>
 		{
 			table.getItems().setAll(items);
 		}
+		table.sort();
 	}
 	
 	
@@ -107,12 +108,14 @@ public class FxTable<T>
 		{
 			table.getItems().setAll(items);
 		}
+		table.sort();
 	}
 	
 	
 	public void setItems(ObservableList<T> source)
 	{
 		table.setItems(source);
+		table.sort();
 	}
 	
 	
