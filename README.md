@@ -14,7 +14,7 @@ a super-fast text editor that works with very large texts.
 
 ## Download
 
-[FindFiles.0.00.03.jar](https://github.com/andy-goryachev/FindFiles/raw/master/releases/FindFiles.0.00.03.jar)
+[FindFiles.0.00.04.jar](https://github.com/andy-goryachev/FindFiles/raw/master/releases/FindFiles.0.00.04.jar)
 
 ## License
 

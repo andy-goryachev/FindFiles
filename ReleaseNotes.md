@@ -1,5 +1,8 @@
 # FindFiles Release Notes
 
+**0.00.04**
+- fixed detail pane content padding
+
 **0.00.03**
 - retain table sorting state after search
 
