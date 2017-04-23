@@ -1,3 +1,4 @@
 TODO
 
 - text field style: remove round corners, faint focus color
+- source setup ui

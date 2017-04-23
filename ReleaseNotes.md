@@ -1,5 +1,8 @@
 # FindFiles Release Notes
 
+**0.00.03**
+- retain table sorting state after search
+
 **0.00.02**
 - focus search field on start
 - better highlighting of the search tokens in the detail pane
