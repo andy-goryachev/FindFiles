@@ -7,7 +7,7 @@
 				"c:/Projects/Common",
 				"c:/Projects/FindFiles"
 			],
-			"filterSpec": "-hidden\n-system\n- *.class\n- *.jar\n- *.zip\n- out/"
+			"filterSpec": "-hidden\n-system\n- *.class\n- *.jar\n- *.zip\n- out/\n- *.png\n- *.jpg"
 		}
 	]
 }
