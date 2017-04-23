@@ -33,6 +33,12 @@ public class FileEntry
 	}
 	
 	
+	public String getFullPath()
+	{
+		return file.getParent();
+	}
+	
+	
 	public long length()
 	{
 		return file.length();

@@ -3,6 +3,7 @@ package goryachev.fx.table;
 import goryachev.fx.FX;
 import goryachev.fx.internal.CssTools;
 import java.util.Collection;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -86,6 +87,7 @@ public class FxTable<T>
 	
 	public void setItems(Collection<T> items)
 	{
+		clearSelection();
 		if(items == null)
 		{
 			table.getItems().clear();
@@ -100,6 +102,7 @@ public class FxTable<T>
 	
 	public void setItems(T[] items)
 	{
+		clearSelection();
 		if(items == null)
 		{
 			table.getItems().clear();
@@ -121,6 +124,7 @@ public class FxTable<T>
 	
 	public void clearItems()
 	{
+		clearSelection();
 		table.getItems().clear();
 	}
 	
@@ -168,12 +172,30 @@ public class FxTable<T>
 	}
 	
 	
+	public void clearSelection()
+	{
+		table.getSelectionModel().clearSelection();
+	}
+	
+	
 	public TableViewSelectionModel<T> getSelectionModel()
 	{
 		return table.getSelectionModel();
 	}
 	
 	
+	public ReadOnlyObjectProperty<T> selectedItemProperty()
+	{
+		return getSelectionModel().selectedItemProperty();
+	}
+
+
+	public ObservableList<T> selectedItemsProperty()
+	{
+		return getSelectionModel().getSelectedItems();
+	}
+
+
 	public void setMultipleSelection(boolean on)
 	{
 		table.getSelectionModel().setSelectionMode(on ? SelectionMode.MULTIPLE : SelectionMode.SINGLE);

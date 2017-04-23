@@ -81,11 +81,11 @@ public class MainPane
 		
 		table = new FxTable<>();
 		table.addColumn("File").setConverter((f) -> f.getName());
-		table.addColumn("Path").setConverter((f) -> f.getPath());
+		table.addColumn("Path").setConverter((f) -> f.getFullPath());
 		table.addColumn("Size").setConverter((f) -> numberFormat.format(f.length())).setAlignment(Pos.CENTER_RIGHT);
 		table.addColumn("Last Modified").setRenderer((f) -> f == null ? null : FX.label(dateFormat.format(f.lastModified())));
 		table.setResizePolicyConstrained();
-		FX.listen(this::updateSelection, table.getSelectedItems());
+		FX.listen(this::updateSelection, table.getSelectionModel().selectedItemProperty());
 		
 		detailPane = new DetailPane();
 		
@@ -205,6 +205,7 @@ public class MainPane
 					setSearching(false);
 					
 					table.setItems(found);
+					FX.later(() -> table.selectFirst());
 				}
 			});
 		}
