@@ -1,5 +1,10 @@
 # FindFiles Release Notes
 
+**0.00.05**
+- page up
+- page down
+- mouse wheel scrolling
+
 **0.00.04**
 - fixed detail pane content padding
 
