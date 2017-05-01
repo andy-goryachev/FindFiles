@@ -1,6 +1,7 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.findfiles;
 import goryachev.common.util.CList;
+import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.FxEditorModel;
 import java.util.Collection;
 import javafx.scene.layout.Region;
@@ -78,5 +79,11 @@ public class StyledTextModel
 	public Region getDecoratedLine(int ix)
 	{
 		return getLine(ix).getDecoratedLine();
+	}
+
+
+	public Edit edit(Edit ed) throws Exception
+	{
+		throw new Exception();
 	}
 }
