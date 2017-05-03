@@ -512,4 +512,14 @@ public class FxEditor
 	{
 		vflow.setSuppressBlink(on);
 	}
+
+
+	public void scrollToVisible(int ix)
+	{
+		if((ix >= 0) && (ix < getLineCount()))
+		{
+			// FIX smarter positioning so the target line is somewhere at 25% of the height
+			vflow.setOrigin(ix, 0);
+		}
+	}
 }

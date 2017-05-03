@@ -53,6 +53,11 @@ public class Styles
 			(
 				fontFamily("monospace")
 			),
+			new Selector(DetailPane.HIT_TABLE_RENDERER).defines
+			(
+				fontFamily("monospace"),
+				fontSize("75%")
+			),
 			
 			new Selector(TextFlowWithHighlights.HIGHLIGHT).defines
 			(

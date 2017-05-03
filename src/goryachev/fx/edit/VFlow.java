@@ -551,7 +551,7 @@ public class VFlow
 	}
 	
 	
-	protected void setOrigin(int top, double offy)
+	public void setOrigin(int top, double offy)
 	{
 		topLineIndex = top;
 		offsety = offy;
