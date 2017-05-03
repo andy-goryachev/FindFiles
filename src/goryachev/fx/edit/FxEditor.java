@@ -10,7 +10,6 @@ import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.Markers;
 import java.io.StringWriter;
 import javafx.beans.Observable;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
@@ -85,17 +84,6 @@ public class FxEditor
 		setBackground(FX.background(Color.WHITE));
 		
 		vflow = new VFlow(this);
-		vflow.caretPath.visibleProperty().bind(new BooleanBinding()
-		{
-			{
-				bind(vflow.caretVisible, displayCaret, focusedProperty(), disabledProperty());
-			}
-
-			protected boolean computeValue()
-			{
-				return vflow.isCaretVisible() && isDisplayCaret() && isFocused() && (!isDisabled());
-			}
-		});
 		
 		vscroll = createVScrollBar();
 		
@@ -512,10 +500,16 @@ public class FxEditor
 			
 			String s = getTextModel().getPlainText(ix);
 			Marker beg = new Marker(0, 0, true);
-			Marker end = new Marker(ix, s.length(), false);
+			Marker end = new Marker(ix, Math.max(0, s.length() - 1), false);
 			
 			selector.setSelection(beg, end);
 			selector.commitSelection();
 		}
+	}
+	
+	
+	protected void setSuppressBlink(boolean on)
+	{
+		vflow.setSuppressBlink(on);
 	}
 }
