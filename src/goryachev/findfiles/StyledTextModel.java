@@ -4,6 +4,7 @@ import goryachev.common.util.CList;
 import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.FxEditorModel;
 import java.util.Collection;
+import java.util.List;
 import javafx.scene.layout.Region;
 
 
@@ -22,11 +23,18 @@ public class StyledTextModel
 	
 	//
 	
-	private final CList<Line> lines = new CList();
+	private final CList<Line> lines;
 	
 	
 	public StyledTextModel()
 	{
+		this(null);
+	}
+	
+	
+	public StyledTextModel(List<Line> lines)
+	{
+		this.lines = new CList(lines);
 	}
 	
 	

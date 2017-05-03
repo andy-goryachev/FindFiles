@@ -7,6 +7,11 @@ import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fx.edit.FxEditor;
+import goryachev.fx.table.FxTable;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
+import javafx.scene.layout.Region;
 
 
 /**
@@ -17,23 +22,43 @@ public class DetailPane
 {
 	public static final CssStyle PANE = new CssStyle("DetailPane_PANE");
 
-	public final StyledTextModel model;
+	public final FxTable<Integer> table;
 	public final FxEditor textField;
+	public final SplitPane split;
 	protected NaiveFileReader reader;
+	protected TextModelWithHighlights model;
 	
 	
 	public DetailPane()
 	{
 		FX.style(this, PANE);
+
+		table = new FxTable();
+		table.addColumn().setRenderer((ix) -> createPreviewRenderer(ix));
+		table.setResizePolicyConstrained();
+		table.hideHeader();
 		
-		model = new StyledTextModel();
-		
-		textField = new FxEditor(model);
+		textField = new FxEditor();
 		textField.setDisplayCaret(true);
 		textField.setWrapText(true);
 		textField.setContentPadding(FX.insets(2.5, 4.5));
 		
-		setCenter(textField);
+		split = new SplitPane(table, textField);
+		split.setDividerPositions(0.1);
+		setCenter(split);
+	}
+	
+	
+	protected Node createPreviewRenderer(Integer ix)
+	{
+		Region r = model.getDecoratedLine(ix);
+		r.setMaxHeight(100);
+		r.setMaxWidth(Double.MAX_VALUE);
+		
+		Label t = new Label();
+		t.setWrapText(false);
+		t.setGraphic(r);
+		return t;
 	}
 	
 	
@@ -50,7 +75,11 @@ public class DetailPane
 	public void clear()
 	{
 		closeReader();
-		model.clear();
+		
+		if(model != null)
+		{
+			model.clear();
+		}
 	}
 
 
@@ -61,8 +90,12 @@ public class DetailPane
 		
 		if(f != null)
 		{
+			// TODO in bg thread
+			
 			reader = new NaiveFileReader(f.file, query);
-			reader.readFile((lines) -> model.setLines(lines));
+			model = reader.readFile();
+			textField.setTextModel(model);
+			table.setItems(model.getHighlights());
 		}
 	}
 }

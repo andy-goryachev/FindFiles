@@ -10,10 +10,10 @@ import goryachev.common.util.text.QuerySegment;
 import goryachev.common.util.text.ZQuery;
 import goryachev.findfiles.StyledTextModel;
 import goryachev.findfiles.TextFlowWithHighlights;
+import goryachev.findfiles.TextModelWithHighlights;
 import goryachev.fx.edit.CTextFlow;
 import java.io.Closeable;
 import java.io.File;
-import java.util.function.Consumer;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 
@@ -90,19 +90,21 @@ public class NaiveFileReader
 
 
 	// FIX this is done in the fx thread
-	public void readFile(Consumer<CList<StyledTextModel.Line>> handler)
+	public TextModelWithHighlights readFile()
 	{
 		// TODO read file in a cancellable bg thread;
 		// try to determine if a known binary file
 		// create a bunch of lines
 		// if binary is detected in a text file, default to binary
 		CList<StyledTextModel.Line> lines = new CList();
+		CList<Integer> highlights = new CList();
 		
 		try
 		{
 			CReader rd = new CReader(file);
 			try
 			{
+				int ix = 0;
 				String s;
 				while((s = rd.readLine()) != null)
 				{
@@ -112,12 +114,15 @@ public class NaiveFileReader
 					if(query.isIncluded(s))
 					{
 						line = createHighlightedLine(s);
+						highlights.add(ix);
 					}
 					else
 					{
 						line = createLine(s);
 					}
 					lines.add(line);
+					
+					ix++;
 				}
 			}
 			finally
@@ -130,7 +135,7 @@ public class NaiveFileReader
 			Log.ex(e);
 		}
 
-		handler.accept(lines);
+		return new TextModelWithHighlights(lines, highlights);
 	}
 
 

@@ -1,5 +1,8 @@
 # FindFiles Release Notes
 
+**0.00.06**
+- added hit table to detail pane
+
 **0.00.05**
 - page up
 - page down
