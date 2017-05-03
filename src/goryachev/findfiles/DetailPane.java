@@ -54,10 +54,8 @@ public class DetailPane
 	{
 		String text = model.getPlainText(ix).trim();
 		
+		// TODO with highlighted text
 		return FX.label(HIT_TABLE_RENDERER, text); 
-//		Label t = new Label();
-//		t.setWrapText(false);
-//		return t;
 	}
 	
 	

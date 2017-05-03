@@ -3,6 +3,7 @@ package goryachev.findfiles;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
 import goryachev.fx.FxStyleSheet;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.paint.Color;
 
 
@@ -51,12 +52,19 @@ public class Styles
 			
 			new Selector(DetailPane.PANE).defines
 			(
-				fontFamily("monospace")
-			),
-			new Selector(DetailPane.HIT_TABLE_RENDERER).defines
-			(
 				fontFamily("monospace"),
-				fontSize("75%")
+				
+				new Selector(DetailPane.HIT_TABLE_RENDERER).defines
+				(
+					fontFamily("dialog"),
+					padding(0),
+					textOverrun(OverrunStyle.CLIP)
+				),
+				new Selector(TABLE).defines
+				(
+					// does not seem to work
+					// fixedCellSize("5px")
+				)
 			),
 			
 			new Selector(TextFlowWithHighlights.HIGHLIGHT).defines
