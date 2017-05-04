@@ -7,6 +7,7 @@ import goryachev.fx.FX;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -19,13 +20,14 @@ public class MainWindow
 	extends FxWindow
 {
 	public final MainPane pane;
+	public final SimpleStringProperty statusProperty = new SimpleStringProperty();
 	
 	
 	public MainWindow()
 	{
 		super("MainWindow");
 		
-		pane = new MainPane();
+		pane = new MainPane(statusProperty);
 				
 		setTitle("Find Files " + Version.VERSION);
 		setTop(createMenu());
@@ -68,8 +70,11 @@ public class MainWindow
 	protected Node createStatusBar()
 	{
 		HPane p = new HPane();
+		p.setPadding(new Insets(1, 10, 1, 10));
+		
+		p.add(FX.label(statusProperty, Color.GRAY));
 		p.fill();
-		p.add(FX.label("copyright © 2017 andy goryachev", Color.GRAY, new Insets(1, 10, 1, 2)));
+		p.add(FX.label("copyright © 2017 andy goryachev", Color.GRAY));
 		return p;
 	}
 }

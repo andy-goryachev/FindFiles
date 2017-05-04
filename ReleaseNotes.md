@@ -1,6 +1,7 @@
 # FindFiles Release Notes
 
 **0.00.06**
+- show number of found files in the status string
 - added hit table to detail pane
 
 **0.00.05**

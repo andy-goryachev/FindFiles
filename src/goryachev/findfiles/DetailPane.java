@@ -85,7 +85,11 @@ public class DetailPane
 		closeReader();
 		clear();
 		
-		if(f != null)
+		if(f == null)
+		{
+			table.clearItems();
+		}
+		else
 		{
 			// TODO in bg thread
 			

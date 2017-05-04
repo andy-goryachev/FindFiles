@@ -19,6 +19,7 @@ import goryachev.fx.icon.ProcessingIcon;
 import goryachev.fx.table.FxTable;
 import java.io.File;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -28,7 +29,7 @@ import javafx.scene.input.KeyEvent;
 
 
 /**
- * Main Panel.
+ * Main Pane.
  */
 public class MainPane
 	extends CPane
@@ -42,6 +43,7 @@ public class MainPane
 	public final DetailPane detailPane;
 	public final SplitPane split;
 	public final SimpleBooleanProperty horizontalSplit = new SimpleBooleanProperty(false);
+	protected final SimpleStringProperty statusProperty;
 	protected final SimpleBooleanProperty searching = new SimpleBooleanProperty(false);
 	protected volatile Search search;
 	protected ZQuery query;
@@ -49,8 +51,10 @@ public class MainPane
 	protected FxDateFormatter dateFormat = new FxDateFormatter("yyyy/MM/dd HH:mm:ss");
 	
 	
-	public MainPane()
+	public MainPane(SimpleStringProperty statusProperty)
 	{
+		this.statusProperty = statusProperty;
+		
 		sourceField = new CComboBox();
 		sourceField.setMinWidth(120);
 		sourceField.setPrefWidth(120);
@@ -121,9 +125,28 @@ public class MainPane
 		boolean on = searching.get();
 		progressField.setGraphic(on ? ProcessingIcon.create(25) : FX.spacer(25));
 		table.setPlaceholder(on ? "Searching..." : "No content in table");
+		
+		statusProperty.set(getStatusText(on));
 	}
 	
 	
+	protected String getStatusText(boolean searching)
+	{
+		if(searching)
+		{
+			return "Searching...";
+		}
+		
+		if(search == null)
+		{
+			return null;
+		}
+		
+		int sz = table.getItems().size();
+		return String.format("%s file(s) found.", numberFormat.format(sz));
+	}
+
+
 	protected void handleSearchKeyPress(KeyEvent ev)
 	{
 		switch(ev.getCode())
@@ -181,8 +204,8 @@ public class MainPane
 			search.cancel();
 		}
 		
-		setSearching(true);
 		table.clearItems();
+		setSearching(true);
 		
 		String expr = searchField.getText();
 		query = new ZQuery(expr);
@@ -201,11 +224,11 @@ public class MainPane
 			{
 				if(search == s)
 				{
-					search = null;
-					setSearching(false);
-					
 					table.setItems(found);
 					FX.later(() -> table.selectFirst());
+					
+					setSearching(false);
+					search = null;
 				}
 			});
 		}
