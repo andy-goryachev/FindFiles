@@ -410,6 +410,7 @@ public class FxEditor
 	{
 		clearSelection();
 		vflow.invalidateLayout();
+		vflow.reset();
 		
 		vscroll.setValue(0);
 		hscroll.setValue(0);
