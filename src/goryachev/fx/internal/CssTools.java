@@ -7,6 +7,7 @@ import goryachev.fx.CssStyle;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeLineCap;
 
 
 /**
@@ -147,6 +148,12 @@ public class CssTools
 	}
 	
 	
+	public static String toValue(boolean x)
+	{
+		return x ? "true" : "false";
+	}
+	
+	
 	public static String toValue(OverrunStyle s)
 	{
 		switch(s)
@@ -177,6 +184,18 @@ public class CssTools
 		case ALWAYS: return "always";
 		case AS_NEEDED: return "as-needed";
 		case NEVER: return "never";
+		}
+		throw new Error("?" + x);
+	}
+	
+	
+	public static String toValue(StrokeLineCap x)
+	{
+		switch(x)
+		{
+		case BUTT: return "butt";
+		case ROUND: return "round";
+		case SQUARE: return "square";
 		}
 		throw new Error("?" + x);
 	}
@@ -294,6 +313,25 @@ public class CssTools
 		else
 		{
 			throw new Error("?" + x);
+		}
+	}
+	
+	
+	public static String toQuotedString(Object x)
+	{
+		if(x == null)
+		{
+			return "null";
+		}
+		
+		String s = x.toString();
+		if(s.startsWith("\"") && s.endsWith("\""))
+		{
+			return s;
+		}
+		else
+		{
+			return "\"" + s + "\"";
 		}
 	}
 }
