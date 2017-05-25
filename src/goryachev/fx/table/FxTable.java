@@ -16,13 +16,6 @@ import javafx.scene.layout.BorderPane;
 
 /**
  * FxTable.
- * 
- * empty rows: http://stackoverflow.com/questions/26298337/tableview-adjust-number-of-visible-rows
-	.table-row-cell:empty 
-	{
-		-fx-background-color: white;
-		-fx-border-color: white;
-	} 
  */
 public class FxTable<T>
 	extends BorderPane
