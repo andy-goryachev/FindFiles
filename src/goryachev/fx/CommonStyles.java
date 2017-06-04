@@ -277,7 +277,6 @@ public class CommonStyles
 		Color fg = FX.alpha(theme.control, 0.5);
 		double w = 7;
 		double sp = 3;
-		double g = 1;
 		double r = 3;
 		
 		double w2 = w + sp + sp;
@@ -292,7 +291,7 @@ public class CommonStyles
 				selector(".thumb").defines
 				(
 					backgroundColor(fg),
-					backgroundInsets(spaces(g, sp, g, sp)),
+					backgroundInsets(sp),
 					backgroundRadius(r),
 					maxWidth(w)
 				),
@@ -342,7 +341,7 @@ public class CommonStyles
 				selector(".thumb").defines
 				(
 					backgroundColor(fg),
-					backgroundInsets(spaces(sp, g, sp, g)),
+					backgroundInsets(sp),
 					backgroundRadius(r),
 					maxHeight(w)
 				),
