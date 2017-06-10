@@ -1,7 +1,7 @@
 TODO
 ====
 - source setup ui
-- copy in editor and table
+- copy from table
 - combo box for search query
 - remember last results
 
