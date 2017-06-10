@@ -6,7 +6,7 @@ import goryachev.common.util.text.ZQuery;
 import goryachev.findfiles.conf.Location;
 import goryachev.findfiles.conf.Locations;
 import goryachev.findfiles.search.FileEntry;
-import goryachev.findfiles.search.Search;
+import goryachev.findfiles.search.SearchThread;
 import goryachev.fx.CAction;
 import goryachev.fx.CButton;
 import goryachev.fx.CComboBox;
@@ -19,6 +19,7 @@ import goryachev.fx.icon.ProcessingIcon;
 import goryachev.fx.table.FxTable;
 import java.io.File;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -34,7 +35,7 @@ import javafx.scene.input.KeyEvent;
 public class MainPane
 	extends CPane
 {
-	public final CAction searchAction = new CAction(this::search);
+	public final CAction searchAction = new CAction(this::startSearch);
 	public final CComboBox sourceField;
 	public final TextField searchField;
 	public final CButton searchButton;
@@ -44,8 +45,7 @@ public class MainPane
 	public final SplitPane split;
 	public final SimpleBooleanProperty horizontalSplit = new SimpleBooleanProperty(false);
 	protected final SimpleStringProperty statusProperty;
-	protected final SimpleBooleanProperty searching = new SimpleBooleanProperty(false);
-	protected volatile Search search;
+	protected final SimpleObjectProperty<SearchThread> searchProperty = new SimpleObjectProperty();
 	protected ZQuery query;
 	protected FxDecimalFormatter numberFormat = new FxDecimalFormatter("#,##0");
 	protected FxDateFormatter dateFormat = new FxDateFormatter("yyyy/MM/dd HH:mm:ss");
@@ -101,7 +101,7 @@ public class MainPane
 		setCenter(split);
 		
 		FX.listen(this::updateSplit, true, horizontalSplit);
-		FX.listen(this::updateProgress, true, searching);
+		FX.listen(this::updateProgress, true, searchProperty);
 		
 		FX.later(this::initLocations);
 	}
@@ -114,36 +114,42 @@ public class MainPane
 	}
 	
 	
-	protected void setSearching(boolean on)
+	protected SearchThread getSearch()
 	{
-		searching.set(on);
+		return searchProperty.get();
+	}
+	
+	
+	protected void setSearch(SearchThread s)
+	{
+		searchProperty.set(s);
 	}
 	
 	
 	protected void updateProgress()
 	{
-		boolean on = searching.get();
-		progressField.setGraphic(on ? ProcessingIcon.create(25) : FX.spacer(25));
-		table.setPlaceholder(on ? "Searching..." : "No content in table");
+		SearchThread search = getSearch();
+		String text = getStatusText(search);
+		boolean on = (search != null);
 		
-		statusProperty.set(getStatusText(on));
+		progressField.setGraphic(on ? ProcessingIcon.create(25) : FX.spacer(25));
+		table.setPlaceholder(on ? text : "No content in table");
+		
+		statusProperty.set(text);
 	}
 	
 	
-	protected String getStatusText(boolean searching)
+	protected String getStatusText(SearchThread search)
 	{
-		if(searching)
-		{
-			return "Searching...";
-		}
-		
 		if(search == null)
 		{
-			return null;
+			int sz = table.getItems().size();
+			return String.format("%s file(s) found.", numberFormat.format(sz));
 		}
-		
-		int sz = table.getItems().size();
-		return String.format("%s file(s) found.", numberFormat.format(sz));
+		else
+		{
+			return "Searching [" + search.getExpression() + "]...";
+		}
 	}
 
 
@@ -152,7 +158,7 @@ public class MainPane
 		switch(ev.getCode())
 		{
 		case ENTER:
-			search();
+			startSearch();
 			ev.consume();
 			break;
 		}
@@ -197,41 +203,40 @@ public class MainPane
 	}
 	
 	
-	protected void search()
+	protected void startSearch()
 	{
+		SearchThread search = getSearch();
 		if(search != null)
 		{
 			search.cancel();
 		}
 		
 		table.clearItems();
-		setSearching(true);
+		detailPane.clear();
 		
 		String expr = searchField.getText();
 		query = new ZQuery(expr);
 		
 		Location loc = (Location)sourceField.getSelectionModel().getSelectedItem();
-		search = new Search(this, loc, query);
+		search = new SearchThread(this, loc, query);
 		search.start();
+		setSearch(search);
 	}
 
 
-	public void finishedSearch(Search s, CList<FileEntry> found)
+	public void finishedSearch(SearchThread s, CList<FileEntry> found)
 	{
-		if(search == s)
+		FX.later(() ->
 		{
-			FX.later(() ->
+			SearchThread search = getSearch();
+			if(search == s)
 			{
-				if(search == s)
-				{
-					table.setItems(found);
-					FX.later(() -> table.selectFirst());
-					
-					setSearching(false);
-					search = null;
-				}
-			});
-		}
+				table.setItems(found);
+				FX.later(() -> table.selectFirst());
+				
+				setSearch(null);
+			}
+		});
 	}
 	
 	

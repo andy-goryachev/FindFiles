@@ -1,4 +1,19 @@
 TODO
-
-- text field style: remove round corners, faint focus color
+====
 - source setup ui
+- copy in editor and table
+- combo box for search query
+- remember last results
+
+
+REFERENCES
+==========
+
+aho corasick
+	https://codereview.stackexchange.com/questions/115624/aho-corasick-for-multiple-exact-string-matching-in-java
+
+A FAST ALGORITHM FOR MULTI-PATTERN SEARCHING. Sun Wu
+	http://webglimpse.net/pubs/TR94-17.pdf
+
+
+

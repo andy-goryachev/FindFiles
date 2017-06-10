@@ -4,6 +4,7 @@ import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.CSorter;
 import goryachev.common.util.CancellableThread;
+import goryachev.common.util.CancelledException;
 import goryachev.common.util.FileTools;
 import goryachev.common.util.Log;
 import goryachev.common.util.RFileFilter;
@@ -14,9 +15,9 @@ import java.io.File;
 
 
 /**
- * Search.
+ * Search Thread.
  */
-public class Search
+public class SearchThread
 	extends CancellableThread
 {
 	protected final MainPane parent;
@@ -27,12 +28,18 @@ public class Search
 	protected RFileFilter filter;
 	
 	
-	public Search(MainPane p, Location loc, ZQuery query)
+	public SearchThread(MainPane p, Location loc, ZQuery query)
 	{
 		this.parent = p;
 		this.location = loc;
 		this.query = query;
 		this.filterSpec = loc.filterSpec;
+	}
+	
+	
+	public String getExpression()
+	{
+		return query.getExpression();
 	}
 	
 	
@@ -47,6 +54,12 @@ public class Search
 			{
 				search(f, f);
 			}
+		}
+		catch(CancelledException e)
+		{
+		}
+		catch(InterruptedException e)
+		{
 		}
 		catch(Exception e)
 		{
