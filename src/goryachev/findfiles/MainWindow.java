@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.findfiles;
+import goryachev.fx.CAction;
 import goryachev.fx.CCheckMenuItem;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
@@ -7,18 +8,21 @@ import goryachev.fx.FX;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
+import goryachev.fx.edit.FxEditor;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.paint.Color;
 
 
 /**
- * Find Files Main Window.
+ * Main Application Window.
  */
 public class MainWindow
 	extends FxWindow
 {
+	public final CAction copyAction = new CAction(this::copy);
 	public final MainPane pane;
 	public final SimpleStringProperty statusProperty = new SimpleStringProperty();
 	
@@ -51,17 +55,24 @@ public class MainWindow
 		CMenuBar mb = new CMenuBar();
 		// file
 		mb.add(m = new CMenu("File"));
+		m.add("Search Locations");
+		m.separator();
 		m.add("Preferences");
 		m.separator();
 		m.add("Quit", FX.exitAction());
 		// edit
 		mb.add(m = new CMenu("Edit"));
-//		m.add("Save Selection As...");
+		m.add("Copy", copyAction);
 		// view
 		mb.add(m = new CMenu("View"));
 		m.add(new CCheckMenuItem("Detail Pane Below", pane.horizontalSplit));
 		// help
 		mb.add(m = new CMenu("Help"));
+		m.add("Contact Support");
+		m.separator();
+		m.add("License");
+		m.add("Open Source Licenses");
+		m.separator();
 		m.add("About");
 		return mb;
 	}
@@ -76,5 +87,27 @@ public class MainWindow
 		p.fill();
 		p.add(FX.label("copyright © 2017 andy goryachev", Color.GRAY));
 		return p;
+	}
+	
+	
+	public void copy()
+	{
+		// this could be a generic action
+		Node n = getLastFocusOwner();
+		if(n != null)
+		{
+			if(n instanceof TextInputControl)
+			{
+				((TextInputControl)n).copy();
+			}
+			else if(n instanceof FxEditor)
+			{
+				((FxEditor)n).copy();
+			}
+//			else if(n instanceof TableView) // damn
+//			{
+//				((TableView)n).copy();
+//			}
+		}
 	}
 }
