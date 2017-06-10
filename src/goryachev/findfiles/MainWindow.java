@@ -68,6 +68,7 @@ public class MainWindow
 		m.add(new CCheckMenuItem("Detail Pane Below", pane.horizontalSplit));
 		// help
 		mb.add(m = new CMenu("Help"));
+		m.add("Check for Update");
 		m.add("Contact Support");
 		m.separator();
 		m.add("License");
