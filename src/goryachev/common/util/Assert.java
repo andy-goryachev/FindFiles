@@ -1,7 +1,6 @@
 // Copyright © 2013-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 
-
 /** Assert */
 public class Assert
 {
@@ -51,5 +50,32 @@ public class Assert
 			throw new IllegalArgumentException(name + " must not be blank");
 		}
 		return x;
+	}
+
+
+	public static void assertTrue(boolean value)
+	{
+		if(!value)
+		{
+			throw new IllegalArgumentException("must be true");
+		}
+	}
+
+
+	public static void assertEquals(Object a, Object b)
+	{
+		if(CKit.notEquals(a, b))
+		{
+			throw new IllegalArgumentException("must be equal");
+		}
+	}
+
+
+	public static <T extends Comparable<T>> void isLessThanOrEqual(T min, T max, String nameMin, String nameMax)
+	{
+		if(min.compareTo(max) > 0)
+		{
+			throw new IllegalArgumentException(nameMin + " must be less than or equal to " + nameMax);
+		}
 	}
 }
