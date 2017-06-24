@@ -4,5 +4,3 @@ TODO
 - copy from table
 - combo box for search query
 - remember last results
-
-

@@ -1,5 +1,10 @@
 # FindFiles Release Notes
 
+**0.00.08**
+- low priority search thread
+- copy action
+- new window action
+
 **0.00.07**
 - styling update
 - fixed vflow reset

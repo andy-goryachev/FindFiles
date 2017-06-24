@@ -23,6 +23,7 @@ public class MainWindow
 	extends FxWindow
 {
 	public final CAction copyAction = new CAction(this::copy);
+	public final static CAction newWindowAction = new CAction(MainWindow::newWindow);
 	public final MainPane pane;
 	public final SimpleStringProperty statusProperty = new SimpleStringProperty();
 	
@@ -66,6 +67,9 @@ public class MainWindow
 		// view
 		mb.add(m = new CMenu("View"));
 		m.add(new CCheckMenuItem("Detail Pane Below", pane.horizontalSplit));
+		// window
+		mb.add(m = new CMenu("Window"));
+		m.add("New Window", newWindowAction);
 		// help
 		mb.add(m = new CMenu("Help"));
 		m.add("Check for Update");
@@ -88,6 +92,12 @@ public class MainWindow
 		p.fill();
 		p.add(FX.label("copyright © 2017 andy goryachev", Color.GRAY));
 		return p;
+	}
+	
+	
+	public static void newWindow()
+	{
+		new MainWindow().open();
 	}
 	
 	

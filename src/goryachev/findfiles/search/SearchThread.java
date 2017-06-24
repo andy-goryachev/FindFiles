@@ -34,6 +34,9 @@ public class SearchThread
 		this.location = loc;
 		this.query = query;
 		this.filterSpec = loc.filterSpec;
+		
+		setPriority(Thread.MIN_PRIORITY);
+		setDaemon(true);
 	}
 	
 	
