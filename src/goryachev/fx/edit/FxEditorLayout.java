@@ -43,7 +43,7 @@ public class FxEditorLayout
 			double x = p.getX() - pad.getLeft();
 			double y = p.getY() - pad.getTop();
 			
-			if(y > 0)
+			if(y >= 0)
 			{
 				if(y < box.getHeight())
 				{
@@ -62,7 +62,15 @@ public class FxEditorLayout
 				break;
 			}
 		}
-		return null;
+		
+		LineBox line = lines.getLast();
+		Region box = line.getBox();
+		int len = 0;
+		if(box instanceof CTextFlow)
+		{
+			len = Math.max(0, ((CTextFlow)box).getText().length() - 1);
+		}
+		return markers.newMarker(line.getLineNumber(), len, false);
 	}
 	
 	

@@ -3,6 +3,7 @@ package goryachev.fx.edit;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
+import goryachev.fx.edit.internal.SelectionHelper;
 import goryachev.fx.util.FxPathBuilder;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -17,6 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
@@ -70,7 +72,7 @@ public class VFlow
 		caretPath.visibleProperty().bind(new BooleanBinding()
 		{
 			{
-				bind(caretVisible, editor.displayCaret, editor.focusedProperty(), editor.disabledProperty(), suppressBlink);
+				bind(caretVisible, editor.displayCaretProperty, editor.focusedProperty(), editor.disabledProperty(), suppressBlink);
 			}
 
 			protected boolean computeValue()
@@ -81,10 +83,32 @@ public class VFlow
 	}
 	
 	
+	public void setOrigin(int top, double offy)
+	{
+		topLineIndex = top;
+		offsety = offy;
+		
+		layoutChildren();
+		
+		// update scroll
+		editor.setHandleScrollEvents(false);
+		int max = editor.getLineCount();
+		double v = (max == 0 ? 0.0 : top / (double)max); 
+		editor.vscroll.setValue(v);
+		editor.setHandleScrollEvents(true);
+	}
+
+
+	public void setTopLineIndex(int ix)
+	{
+		topLineIndex = ix;
+	}
+	
+	
 	protected void layoutChildren()
 	{
 		layout = recreateLayout(layout);
-		reloadSelectionDecorations();
+		updateCaretAndSelection();
 	}
 	
 	
@@ -236,22 +260,22 @@ public class VFlow
 	}
 	
 	
-	public void reloadSelectionDecorations()
+	public void updateCaretAndSelection()
 	{
-		FxPathBuilder hb = new FxPathBuilder();
-		FxPathBuilder cb = new FxPathBuilder();
+		FxPathBuilder selectionBuilder = new FxPathBuilder();
+		FxPathBuilder caretBuilder = new FxPathBuilder();
 		
-		for(SelectionSegment s: editor.segments)
+		for(SelectionSegment s: editor.selector.segments)
 		{
-			Marker start = s.getStart();
-			Marker end = s.getEnd();
+			Marker start = s.getAnchor();
+			Marker end = s.getCaret();
 			
-			createSelectionHighlight(hb, start, end);
-			createCaretPath(cb, end);
+			createSelectionHighlight(selectionBuilder, start, end);
+			createCaretPath(caretBuilder, end);
 		}
 		
-		selectionHighlight.getElements().setAll(hb.getPath());
-		caretPath.getElements().setAll(cb.getPath());
+		selectionHighlight.getElements().setAll(selectionBuilder.getPath());
+		caretPath.getElements().setAll(caretBuilder.getPath());
 	}
 	
 	
@@ -262,194 +286,6 @@ public class VFlow
 		{
 			p.moveto(c.x, c.y0);
 			p.lineto(c.x, c.y1);
-		}
-	}
-	
-	
-	// FIX selection shape is incorrect if mixing LTR and RTL languages
-	protected void createSelectionHighlight(FxPathBuilder p, Marker startMarker, Marker endMarker)
-	{		
-		if((startMarker == null) || (endMarker == null))
-		{
-			return;
-		}
-		
-		if(startMarker.compareTo(endMarker) > 0)
-		{
-			Marker tmp = startMarker;
-			startMarker = endMarker;
-			endMarker = tmp;
-		}
-		
-		if(endMarker.getLine() < topLineIndex)
-		{
-			// selection is above visible area
-			return;
-		}
-		
-		if(startMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount()))
-		{
-			// selection is below visible area
-			return;
-		}
-
-		CaretLocation beg = editor.getCaretLocation(startMarker);
-		CaretLocation end = editor.getCaretLocation(endMarker);
-		
-		double left = 0.0;
-		double right = getWidth() - left;
-		double top = 0.0; 
-		double bottom = getHeight();
-		
-		// there is a number of possible shapes resulting from intersection of
-		// the selection shape and the visible area.  the logic below explicitly generates 
-		// resulting paths because the selection can be quite large.
-		
-		if(beg == null)
-		{
-			if(end == null)
-			{
-				if((startMarker.getLine() < topLineIndex) && (endMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount())))
-				{
-					// 04
-					p.moveto(left, top);
-					p.lineto(right, top);
-					p.lineto(right, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, top);
-				}
-				return;
-			}
-			
-			// start caret is above the visible area
-			boolean crossTop = end.containsY(top);
-			boolean crossBottom = end.containsY(bottom);
-			
-			if(crossBottom)
-			{
-				if(crossTop)
-				{
-					// 01
-					p.moveto(left, top);
-					p.lineto(end.x, top);
-					p.lineto(end.x, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, top);
-				}
-				else
-				{
-					// 02
-					p.moveto(left, top);
-					p.lineto(right, top);
-					p.lineto(right, end.y0);
-					p.lineto(end.x, end.y0);
-					p.lineto(end.x, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, top);
-				}
-			}
-			else
-			{
-				if(crossTop)
-				{
-					// 03
-					p.moveto(left, top);
-					p.lineto(end.x, top);
-					p.lineto(end.x, end.y1);
-					p.lineto(left, end.y1);
-					p.lineto(left, top);
-				}
-				else
-				{
-					// 05
-					p.moveto(left, top);
-					p.lineto(right, top);
-					p.lineto(right, end.y0);
-					p.lineto(end.x, end.y0);
-					p.lineto(end.x, end.y1);
-					p.lineto(left, end.y1);
-					p.lineto(left, top);
-				}
-			}
-		}
-		else if(end == null)
-		{
-			// end caret is below the visible area
-			boolean crossTop = beg.containsY(top);
-			boolean crossBottom = beg.containsY(bottom);
-			
-			if(crossTop)
-			{
-				if(crossBottom)
-				{
-					// 06
-					p.moveto(beg.x, top);
-					p.lineto(right, top);
-					p.lineto(right, bottom);
-					p.lineto(beg.x, bottom);
-					p.lineto(beg.x, top);
-				}
-				else
-				{
-					// 07
-					p.moveto(beg.x, top);
-					p.lineto(right, top);
-					p.lineto(right, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, beg.y1);
-					p.lineto(beg.x, beg.y1);
-					p.lineto(beg.x, top);
-				}
-			}
-			else
-			{
-				if(crossBottom)
-				{
-					// 08
-					p.moveto(beg.x, beg.y0);
-					p.lineto(right, beg.y0);
-					p.lineto(right, bottom);
-					p.lineto(beg.x, bottom);
-					p.lineto(beg.x, beg.y0);
-				}
-				else
-				{
-					// 09
-					p.moveto(beg.x, beg.y0);
-					p.lineto(right, beg.y0);
-					p.lineto(right, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, beg.y1);
-					p.lineto(beg.x, beg.y1);
-					p.lineto(beg.x, beg.y0);
-				}
-			}
-		}
-		else
-		{
-			// both carets are in the visible area
-			if(EditorTools.isCloseEnough(beg.y0, end.y0))
-			{
-				// 10
-				p.moveto(beg.x, beg.y0);
-				p.lineto(end.x, beg.y0);
-				p.lineto(end.x, end.y1);
-				p.lineto(beg.x, end.y1);
-				p.lineto(beg.x, beg.y0);
-			}
-			else
-			{
-				// 11
-				p.moveto(beg.x, beg.y0);
-				p.lineto(right, beg.y0);
-				p.lineto(right, end.y0);
-				p.lineto(end.x, end.y0);
-				p.lineto(end.x, end.y1);
-				p.lineto(left, end.y1);
-				p.lineto(left, beg.y1);
-				p.lineto(beg.x, beg.y1);
-				p.lineto(beg.x, beg.y0);
-			}
 		}
 	}
 	
@@ -559,24 +395,88 @@ public class VFlow
 	}
 	
 	
-	public void setOrigin(int top, double offy)
+	protected PathElement[] getRange(int line, int startOffset, int endOffset)
 	{
-		topLineIndex = top;
-		offsety = offy;
-		
-		layoutChildren();
-		
-		// update scroll
-		editor.setHandleScrollEvents(false);
-		int max = editor.getLineCount();
-		double v = (max == 0 ? 0.0 : top / (double)max); 
-		editor.vscroll.setValue(v);
-		editor.setHandleScrollEvents(true);
+		LineBox lineBox = layout.getLineBox(line);
+		PathElement[] pe = lineBox.getRange(startOffset, endOffset);
+		if(pe == null)
+		{
+			return null;
+		}
+		else
+		{
+			return EditorTools.translatePath(this, lineBox.getBox(), pe);	
+		}
 	}
+	
+	
+	/**
+	 * Populates path builder with selection shapes between two markers.
+	 * This method handles RTL and LTR text.
+	 */
+	protected void createSelectionHighlight(FxPathBuilder b, Marker startMarker, Marker endMarker)
+	{		
+		if((startMarker == null) || (endMarker == null))
+		{
+			return;
+		}
+		
+		// make sure startMarker < endMarker
+		if(startMarker.compareTo(endMarker) > 0)
+		{
+			Marker tmp = startMarker;
+			startMarker = endMarker;
+			endMarker = tmp;
+		}
+		
+		if(endMarker.getLine() < topLineIndex)
+		{
+			// selection is above visible area
+			return;
+		}
+		else if(startMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount()))
+		{
+			// selection is below visible area
+			return;
+		}
+		
+		// get selection shapes for top and bottom lines
+		// translated to this VFlow coordinates.
+		// when we say "visible text line" we mean the first row of text, since the model text line
+		// might contain multiple visible rows due to wrapping.
+		PathElement[] top;
+		PathElement[] bottom;
+		if(startMarker.getLine() == endMarker.getLine())
+		{
+			top = getRange(startMarker.getLine(), startMarker.getLineOffset(), endMarker.getLineOffset());
+			bottom = null;
+		}
+		else
+		{
+			top = getRange(startMarker.getLine(), startMarker.getLineOffset(), -1);
+			bottom = getRange(endMarker.getLine(), 0, endMarker.getLineOffset());
+		}
+		
+		// generate shapes
+		double left = 0.0;
+		double right = getWidth() - left;
+		
+		SelectionHelper h = new SelectionHelper(b);
+		h.process(top);
+		
+		if(bottom == null)
+		{
+			h.generateTop(top);
+			h.generateMiddle(left, right);
+			h.generateBottom(top);
+		}
+		else
+		{
+			h.process(bottom);
 
-
-	public void setTopLineIndex(int ix)
-	{
-		topLineIndex = ix;
+			h.generateTop(top);
+			h.generateMiddle(left, right);
+			h.generateBottom(bottom);
+		}
 	}
 }
