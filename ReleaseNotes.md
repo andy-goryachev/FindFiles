@@ -4,6 +4,7 @@
 - low priority search thread
 - copy action
 - new window action
+- fixed selection of RTL/LTR texts
 
 **0.00.07**
 - styling update
