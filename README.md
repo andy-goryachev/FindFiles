@@ -1,12 +1,8 @@
 # FindFiles
 
-Find Text In Files // WORK IN PROGRESS
-
 ![screenshot](https://github.com/andy-goryachev/FindFiles/blob/master/doc/screenshot.png)
 
-## Why
-
-A simple utility to search for text in folders.
+A simple utility to search for text in multiple folders.
 
 Also, this is a test bed for 
 [FxEditor](https://github.com/andy-goryachev/FxEditor),
