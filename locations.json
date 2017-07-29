@@ -2,10 +2,19 @@
 	"locations":
 	[
 		{
+			"name": "Common/FindFiles",
 			"directories":
 			[
 				"c:/Projects/Common",
 				"c:/Projects/FindFiles"
+			],
+			"filterSpec": "-hidden\n-system\n- *.class\n- *.jar\n- *.zip\n- out/\n- *.png\n- *.jpg"
+		},
+		{
+			"name": "All",
+			"directories":
+			[
+				"c:/Projects"
 			],
 			"filterSpec": "-hidden\n-system\n- *.class\n- *.jar\n- *.zip\n- out/\n- *.png\n- *.jpg"
 		}
