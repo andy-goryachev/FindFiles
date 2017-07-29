@@ -55,8 +55,10 @@ public class MainWindow
 		CMenu m;
 		CMenuBar mb = new CMenuBar();
 		// file
-		mb.add(m = new CMenu("File"));
+		mb.add(m = new CMenu("FindFiles"));		
 		m.add("Search Locations");
+		m.separator();
+		m.add("New Window", newWindowAction);
 		m.separator();
 		m.add("Preferences");
 		m.separator();
@@ -67,9 +69,6 @@ public class MainWindow
 		// view
 		mb.add(m = new CMenu("View"));
 		m.add(new CCheckMenuItem("Detail Pane Below", pane.horizontalSplit));
-		// window
-		mb.add(m = new CMenu("Window"));
-		m.add("New Window", newWindowAction);
 		// help
 		mb.add(m = new CMenu("Help"));
 		m.add("Check for Update");

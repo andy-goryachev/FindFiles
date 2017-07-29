@@ -1,10 +1,14 @@
 # FindFiles Release Notes
 
+**0.00.09**
+- added location name
+
 **0.00.08**
 - low priority search thread
 - copy action
 - new window action
 - fixed selection of RTL/LTR texts
+- gson 2.8.1
 
 **0.00.07**
 - styling update

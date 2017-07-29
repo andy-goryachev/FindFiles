@@ -56,8 +56,8 @@ public class MainPane
 		this.statusProperty = statusProperty;
 		
 		sourceField = new CComboBox();
-		sourceField.setMinWidth(120);
-		sourceField.setPrefWidth(120);
+		sourceField.setMinWidth(150);
+		sourceField.setPrefWidth(150);
 		
 		searchField = new TextField();
 		searchField.addEventHandler(KeyEvent.KEY_PRESSED, (ev) -> handleSearchKeyPress(ev));
@@ -68,20 +68,22 @@ public class MainPane
 		
 		CPane p = new CPane();
 		p.setPadding(2, 10);
-		p.setHGap(10);
+		p.setHGap(5);
 		p.addColumns
 		(
 			CPane.PREF,
 			CPane.PREF,
 			CPane.PREF,
 			CPane.FILL,
+			CPane.PREF,
 			CPane.PREF
 		);
 		p.add(0, 0, FX.label("Source:"));
 		p.add(1, 0, sourceField);
-		p.add(2, 0, progressField);
+		p.add(2, 0, FX.label("Find:"));
 		p.add(3, 0, searchField);
 		p.add(4, 0, searchButton);
+		p.add(5, 0, progressField);
 		
 		table = new FxTable<>();
 		table.addColumn("File").setConverter((f) -> f.getName());
@@ -205,6 +207,12 @@ public class MainPane
 	
 	protected void startSearch()
 	{
+		String expr = searchField.getText();
+		if(CKit.isBlank(expr))
+		{
+			return;
+		}
+		
 		SearchThread search = getSearch();
 		if(search != null)
 		{
@@ -214,7 +222,6 @@ public class MainPane
 		table.clearItems();
 		detailPane.clear();
 		
-		String expr = searchField.getText();
 		query = new ZQuery(expr);
 		
 		Location loc = (Location)sourceField.getSelectionModel().getSelectedItem();
