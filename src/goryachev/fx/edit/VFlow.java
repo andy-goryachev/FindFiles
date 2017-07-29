@@ -14,9 +14,12 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.control.Labeled;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
 import javafx.scene.shape.Rectangle;
@@ -170,6 +173,34 @@ public class VFlow
 		return caretVisible.get();
 	}
 	
+	
+	/** estimates the last visible line number and computes preferred width based on that */ 
+	protected double estimateLineNumberColumnWidth(Labeled c)
+	{			
+		double h = Math.max(1.0, c.prefHeight(-1));
+		int lineCount = (int)(getHeight() / h);
+		int ix = topLineIndex + lineCount + 1;
+		
+		setLineNumber(c, ix);
+		
+		c.setManaged(true);
+		getChildren().add(c);
+		c.applyCss();
+		
+		double w = c.prefWidth(-1);
+		
+		getChildren().remove(c);
+		
+		return w;
+	}
+	
+	
+	protected void setLineNumber(Labeled c, int ix)
+	{
+		String s = editor.getLineNumberFormatter().format(ix + 1);
+		c.setText(s);
+	}
+	
 
 	public FxEditorLayout recreateLayout(FxEditorLayout prev)
 	{
@@ -189,47 +220,87 @@ public class VFlow
 		FxEditorLayout la = new FxEditorLayout(editor, topLineIndex);
 		
 		Insets pad = getInsets();
-		double maxy = height - pad.getBottom();
+		double ymax = height - pad.getBottom();
 		double y = pad.getTop() - offsety;
 		double x0 = pad.getLeft();
+		double x1 = x0;
 		boolean wrap = editor.isWrapText();
+		boolean showLineNumbers = editor.isShowLineNumbers();
+		boolean estimateLineNumberWidth = showLineNumbers;
+		double wid = width - x1 - pad.getRight();
 		
-		// TODO account for leading, trailing components
-		double wid = width - x0 - pad.getRight();
-		
+		// from top to bottom
 		for(int ix=topLineIndex; ix<lines; ix++)
 		{
 			LineBox b = (prev == null ? null : prev.getLineBox(ix));
-			
-			Region nd;
 			if(b == null)
 			{
-				nd = model.getDecoratedLine(ix);
+				b = model.getDecoratedLine(ix);
+				b.init(ix);
 			}
-			else
+			
+			double lnw = 0;
+			if(estimateLineNumberWidth)
 			{
-				nd = b.getBox();
+				lnw = estimateLineNumberColumnWidth(b.getLineNumberComponent());
+				
+//				lnw = 100; // FIX
+				
+				x1 += lnw;
+				wid -= lnw;
+				if(wid < 0)
+				{
+					wid = 0;
+				}
+				estimateLineNumberWidth = false;
 			}
+			
+			// TODO skip sizing if the width has not changed (incl. line number component)
+			
+			Region nd = b.getCenter();
+			nd.setManaged(true);
 			getChildren().add(nd);
 			nd.applyCss();
-			nd.setManaged(true);
+			la.addLineBox(b);
 			
 			double w = wrap ? wid : nd.prefWidth(-1);
 			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
-			
 			double h = nd.prefHeight(w);
 			
-			if(b == null)
+			double lnh = 0;
+			if(showLineNumbers)
 			{
-				b = new LineBox(ix, nd);
+				Labeled nc = b.getLineNumberComponent();
+				setLineNumber(nc, ix);
+				
+				nc.setManaged(true);
+				getChildren().add(nc);
+				nc.applyCss();
+				//nc.setMaxWidth(lnw);
+				
+				lnh = nc.prefHeight(lnw);
 			}
-			la.addLineBox(b);
-			b.setHeight(h);
 			
-			layoutInArea(nd, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			h = Math.max(h, lnh);
+			b.setLineHeight(h);
+			// TODO set line box width
+
+			layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			
+			if(showLineNumbers)
+			{
+				Labeled nc = b.getLineNumberComponent();
+				
+//				nc.resize(lnw, h);
+				
+				// FIX this does not work for some reason
+//				layoutInArea(nc, x0, y, lnw, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
+				// and this lays line number component left aligned??
+				layoutInArea(nc, x0, y, lnw, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			}
 			
 			y += h;
-			if(y > maxy)
+			if(y > ymax)
 			{
 				break;
 			}
@@ -267,11 +338,12 @@ public class VFlow
 		
 		for(SelectionSegment s: editor.selector.segments)
 		{
-			Marker start = s.getAnchor();
-			Marker end = s.getCaret();
+			Marker start = s.getMin();
+			Marker end = s.getMax();
+			Marker caret = s.getCaret();
 			
 			createSelectionHighlight(selectionBuilder, start, end);
-			createCaretPath(caretBuilder, end);
+			createCaretPath(caretBuilder, caret);
 		}
 		
 		selectionHighlight.getElements().setAll(selectionBuilder.getPath());
@@ -395,17 +467,69 @@ public class VFlow
 	}
 	
 	
-	protected PathElement[] getRange(int line, int startOffset, int endOffset)
+	protected PathElement[] getRangeTop()
+	{
+		double w = getWidth();
+		
+		return new PathElement[]
+		{
+			new MoveTo(0, -1),
+			new LineTo(w, -1),
+			new LineTo(w, 0),
+			new LineTo(0, 0),
+			new LineTo(0, -1)
+		};
+	}
+	
+	
+	protected PathElement[] getRangeBottom()
+	{
+		double w = getWidth();
+		double h = getHeight();
+		double h1 = h + 1;
+		
+		return new PathElement[]
+		{
+			new MoveTo(0, h),
+			new LineTo(w, h),
+			new LineTo(w, h1),
+			new LineTo(0, h1),
+			new LineTo(0, h)
+		};
+	}
+	
+	
+	protected PathElement[] getRangeShape(int line, int startOffset, int endOffset)
 	{
 		LineBox lineBox = layout.getLineBox(line);
-		PathElement[] pe = lineBox.getRange(startOffset, endOffset);
+		if(lineBox == null)
+		{
+			return null;
+		}
+		
+		if(endOffset < 0)
+		{
+			endOffset = lineBox.getTextLength();
+		}
+		
+		PathElement[] pe;
+		if(startOffset == endOffset)
+		{
+			// not a range, use caret shape instead
+			pe = lineBox.getCaretShape(startOffset, false);
+		}
+		else
+		{
+			pe = lineBox.getRange(startOffset, endOffset);
+		}
+		
 		if(pe == null)
 		{
 			return null;
 		}
 		else
 		{
-			return EditorTools.translatePath(this, lineBox.getBox(), pe);	
+			return EditorTools.translatePath(this, lineBox.getCenter(), pe);	
 		}
 	}
 	
@@ -415,18 +539,16 @@ public class VFlow
 	 * This method handles RTL and LTR text.
 	 */
 	protected void createSelectionHighlight(FxPathBuilder b, Marker startMarker, Marker endMarker)
-	{		
+	{
 		if((startMarker == null) || (endMarker == null))
 		{
 			return;
 		}
 		
-		// make sure startMarker < endMarker
+		// enforce startMarker < endMarker
 		if(startMarker.compareTo(endMarker) > 0)
 		{
-			Marker tmp = startMarker;
-			startMarker = endMarker;
-			endMarker = tmp;
+			throw new Error(startMarker + "<" + endMarker);
 		}
 		
 		if(endMarker.getLine() < topLineIndex)
@@ -448,26 +570,35 @@ public class VFlow
 		PathElement[] bottom;
 		if(startMarker.getLine() == endMarker.getLine())
 		{
-			top = getRange(startMarker.getLine(), startMarker.getLineOffset(), endMarker.getLineOffset());
+			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), endMarker.getLineOffset());
 			bottom = null;
 		}
 		else
 		{
-			top = getRange(startMarker.getLine(), startMarker.getLineOffset(), -1);
-			bottom = getRange(endMarker.getLine(), 0, endMarker.getLineOffset());
+			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), -1);
+			if(top == null)
+			{
+				top = getRangeTop();
+			}
+			
+			bottom = getRangeShape(endMarker.getLine(), 0, endMarker.getLineOffset());
+			if(bottom == null)
+			{
+				bottom = getRangeBottom();
+			}
 		}
 		
 		// generate shapes
 		double left = 0.0;
 		double right = getWidth() - left;
+		SelectionHelper h = new SelectionHelper(b, left, right);
 		
-		SelectionHelper h = new SelectionHelper(b);
 		h.process(top);
 		
 		if(bottom == null)
 		{
 			h.generateTop(top);
-			h.generateMiddle(left, right);
+			h.generateMiddle();
 			h.generateBottom(top);
 		}
 		else
@@ -475,7 +606,7 @@ public class VFlow
 			h.process(bottom);
 
 			h.generateTop(top);
-			h.generateMiddle(left, right);
+			h.generateMiddle();
 			h.generateBottom(bottom);
 		}
 	}

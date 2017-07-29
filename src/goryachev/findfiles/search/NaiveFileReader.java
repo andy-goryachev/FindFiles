@@ -11,10 +11,9 @@ import goryachev.common.util.text.ZQuery;
 import goryachev.findfiles.StyledTextModel;
 import goryachev.findfiles.TextFlowWithHighlights;
 import goryachev.findfiles.TextModelWithHighlights;
-import goryachev.fx.edit.CTextFlow;
+import goryachev.fx.edit.LineBox;
 import java.io.Closeable;
 import java.io.File;
-import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 
 
@@ -148,9 +147,9 @@ public class NaiveFileReader
 				return text;
 			}
 
-			public Region getDecoratedLine()
+			public LineBox getDecoratedLine()
 			{
-				return new CTextFlow(new Text(text));
+				return new LineBox().addText(new Text(text));
 			}
 		};
 	}
@@ -167,7 +166,7 @@ public class NaiveFileReader
 				return text;
 			}
 
-			public Region getDecoratedLine()
+			public LineBox getDecoratedLine()
 			{
 				ElasticIntArray a = new ElasticIntArray();
 				
@@ -200,7 +199,7 @@ public class NaiveFileReader
 					}
 				}
 				
-				return new TextFlowWithHighlights(text, a.toArray());
+				return new LineBox(new TextFlowWithHighlights(text, a.toArray()));
 			}
 		};
 	}
