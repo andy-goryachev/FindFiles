@@ -50,6 +50,8 @@ public class FxEditor
 {
 	/** caret style */
 	public static final CssStyle CARET = new CssStyle("FxEditor_CARET");
+	/** caret line highlight */
+	public static final CssStyle CARET_LINE_HIGHLIGHT = new CssStyle("FxEditor_CARET_LINE_HIGHLIGHT");
 	/** selection highlight */
 	public static final CssStyle HIGHLIGHT = new CssStyle("FxEditor_HIGHLIGHT");
 	/** panel style */
@@ -66,6 +68,7 @@ public class FxEditor
 	protected final ReadOnlyBooleanWrapper multipleSelectionProperty = new ReadOnlyBooleanWrapper(false);
 	protected final BooleanProperty displayCaretProperty = new SimpleBooleanProperty(true);
 	protected final BooleanProperty showLineNumbersProperty = new SimpleBooleanProperty(false);
+	protected final BooleanProperty highlightCaretLineProperty = new SimpleBooleanProperty(true);
 	protected final ReadOnlyObjectWrapper<Duration> caretBlinkRateProperty = new ReadOnlyObjectWrapper(Duration.millis(500));
 	protected final SimpleObjectProperty<FxFormatter> lineNumberFormatterProperty = new SimpleObjectProperty<>();
 	protected final Markers markers = new Markers(32);
@@ -220,10 +223,11 @@ public class FxEditor
 			m.addListener(this);
 		}
 		
-//		Marker ma = new Marker(0, 0, true);
-//		selector.setSelection(ma, ma);
-//		selector.commitSelection();
-		
+		selector.clear();
+		if(vflow != null)
+		{
+			vflow.invalidateLayout();
+		}
 		updateLayout();
 	}
 	
@@ -483,6 +487,18 @@ public class FxEditor
 	public boolean isShowLineNumbers()
 	{
 		return showLineNumbersProperty.get();
+	}
+	
+	
+	public void setHighlightCaretLine(boolean on)
+	{
+		highlightCaretLineProperty.set(on);
+	}
+	
+	
+	public boolean isHighlightCaretLine()
+	{
+		return highlightCaretLineProperty.get();
 	}
 	
 

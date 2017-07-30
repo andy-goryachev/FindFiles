@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import goryachev.common.util.D;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
@@ -36,6 +37,7 @@ public class VFlow
 	public final Timeline caretAnimation;
 	public final Path caretPath;
 	public final Path selectionHighlight;
+	public final Path caretLineHighlight;
 	protected final BooleanProperty caretVisible = new SimpleBooleanProperty(true);
 	protected final BooleanProperty suppressBlink = new SimpleBooleanProperty(false);
 	protected final Rectangle clip;
@@ -55,21 +57,27 @@ public class VFlow
 		
 		clip = new Rectangle();
 		
+		caretPath = new Path();
+		FX.style(caretPath, FxEditor.CARET);
+		caretPath.setManaged(false);
+		caretPath.setStroke(Color.BLACK);
+
+		caretLineHighlight = new Path();
+		FX.style(caretLineHighlight, FxEditor.CARET_LINE_HIGHLIGHT);
+		caretLineHighlight.setManaged(false);
+		caretLineHighlight.setStroke(null);
+		caretLineHighlight.setFill(Color.rgb(255, 0, 255, 0.02));
+
 		selectionHighlight = new Path();
 		FX.style(selectionHighlight, FxEditor.HIGHLIGHT);
 		selectionHighlight.setManaged(false);
 		selectionHighlight.setStroke(null);
 		selectionHighlight.setFill(Color.rgb(255, 255, 0, 0.25));
-		
-		caretPath = new Path();
-		FX.style(caretPath, FxEditor.CARET);
-		caretPath.setManaged(false);
-		caretPath.setStroke(Color.BLACK);
-		
+				
 		caretAnimation = new Timeline();
 		caretAnimation.setCycleCount(Animation.INDEFINITE);
 		
-		getChildren().addAll(selectionHighlight, caretPath);
+		getChildren().addAll(selectionHighlight, caretLineHighlight, caretPath);
 		setClip(clip);
 		
 		caretPath.visibleProperty().bind(new BooleanBinding()
@@ -228,6 +236,7 @@ public class VFlow
 		boolean showLineNumbers = editor.isShowLineNumbers();
 		boolean estimateLineNumberWidth = showLineNumbers;
 		double wid = width - x1 - pad.getRight();
+		double lnw = 0;
 		
 		// from top to bottom
 		for(int ix=topLineIndex; ix<lines; ix++)
@@ -239,12 +248,9 @@ public class VFlow
 				b.init(ix);
 			}
 			
-			double lnw = 0;
 			if(estimateLineNumberWidth)
 			{
 				lnw = estimateLineNumberColumnWidth(b.getLineNumberComponent());
-				
-//				lnw = 100; // FIX
 				
 				x1 += lnw;
 				wid -= lnw;
@@ -267,7 +273,6 @@ public class VFlow
 			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
 			double h = nd.prefHeight(w);
 			
-			double lnh = 0;
 			if(showLineNumbers)
 			{
 				Labeled nc = b.getLineNumberComponent();
@@ -276,28 +281,21 @@ public class VFlow
 				nc.setManaged(true);
 				getChildren().add(nc);
 				nc.applyCss();
-				//nc.setMaxWidth(lnw);
 				
-				lnh = nc.prefHeight(lnw);
+				h = Math.max(h, nc.prefHeight(lnw));
+				b.setLineHeight(h);
+				
+				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+				layoutInArea(nc, x0, y, lnw, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
 			}
-			
-			h = Math.max(h, lnh);
-			b.setLineHeight(h);
-			// TODO set line box width
-
-			layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
-			
-			if(showLineNumbers)
+			else
 			{
-				Labeled nc = b.getLineNumberComponent();
+				b.setLineHeight(h);
 				
-//				nc.resize(lnw, h);
-				
-				// FIX this does not work for some reason
-//				layoutInArea(nc, x0, y, lnw, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
-				// and this lays line number component left aligned??
-				layoutInArea(nc, x0, y, lnw, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			}
+			
+			// TODO set line box width
 			
 			y += h;
 			if(y > ymax)
@@ -333,6 +331,17 @@ public class VFlow
 	
 	public void updateCaretAndSelection()
 	{
+		if(editor.isHighlightCaretLine())
+		{
+			FxPathBuilder caretLineBuilder = new FxPathBuilder();
+			for(SelectionSegment s: editor.selector.segments)
+			{
+				Marker caret = s.getCaret();
+				createCaretLineHighlight(caretLineBuilder, caret);
+			}
+			caretLineHighlight.getElements().setAll(caretLineBuilder.getPath());
+		}
+		
 		FxPathBuilder selectionBuilder = new FxPathBuilder();
 		FxPathBuilder caretBuilder = new FxPathBuilder();
 		
@@ -358,6 +367,16 @@ public class VFlow
 		{
 			p.moveto(c.x, c.y0);
 			p.lineto(c.x, c.y1);
+		}
+	}
+	
+	
+	protected void createCaretLineHighlight(FxPathBuilder pbuilder, Marker m)
+	{
+		LineBox b = layout.getLineBox(m.getLine());
+		if(b != null)
+		{
+			b.addBoxOutline(pbuilder, getWidth());
 		}
 	}
 	

@@ -2,6 +2,7 @@
 package goryachev.fx.edit;
 import goryachev.fx.FX;
 import goryachev.fx.FxCtl;
+import goryachev.fx.util.FxPathBuilder;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Labeled;
@@ -21,7 +22,7 @@ public class LineBox
 	private Labeled lineNumberComponent;
 	private Region center;
 	private double height;
-	private static Insets PADDING = new Insets(0, 10, 0, 0);
+	private static Insets PADDING = new Insets(0, 7, 0, 0);
 	
 	
 	public LineBox()
@@ -171,5 +172,18 @@ public class LineBox
 	protected Labeled createLineNumberComponent()
 	{
 		return FX.label(FxEditor.LINE_NUMBER, Color.LIGHTGRAY, PADDING,  FxCtl.FORCE_MIN_WIDTH);
+	}
+
+
+	public void addBoxOutline(FxPathBuilder b, double w)
+	{
+		double y0 = center.getLayoutY();
+		double y1 = y0 + center.getHeight();
+		
+		b.moveto(0, y0);
+		b.lineto(w, y0);
+		b.lineto(w, y1);
+		b.lineto(0, y1);
+		b.lineto(0, y0);
 	}
 }
