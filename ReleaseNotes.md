@@ -2,6 +2,7 @@
 
 **0.00.09**
 - added location name
+- fixed #1 NPE in getRange
 
 **0.00.08**
 - low priority search thread

@@ -10,7 +10,7 @@ a super-fast text editor that works with very large texts.
 
 ## Download
 
-[Download FindFiles JAR](https://github.com/andy-goryachev/FindFiles/raw/master/releases/FindFiles.0.00.08.jar)
+[Download FindFiles JAR](https://github.com/andy-goryachev/FindFiles/raw/master/releases/FindFiles.0.00.09.jar)
 
 ## License
 
