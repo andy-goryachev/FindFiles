@@ -6,7 +6,6 @@ import goryachev.fx.edit.FxEditorModel;
 import goryachev.fx.edit.LineBox;
 import java.util.Collection;
 import java.util.List;
-import javafx.scene.layout.Region;
 
 
 /**
@@ -19,7 +18,7 @@ public class StyledTextModel
 	{
 		public String getPlainText();
 		
-		public LineBox getDecoratedLine();
+		public LineBox getLineBox();
 	}
 	
 	//
@@ -85,9 +84,9 @@ public class StyledTextModel
 	}
 
 
-	public LineBox getDecoratedLine(int ix)
+	public LineBox getLineBox(int ix)
 	{
-		return getLine(ix).getDecoratedLine();
+		return getLine(ix).getLineBox();
 	}
 
 

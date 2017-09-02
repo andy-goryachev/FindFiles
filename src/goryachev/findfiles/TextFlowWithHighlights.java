@@ -30,7 +30,7 @@ public class TextFlowWithHighlights
 		this.indices = indices;
 
 		highlights = new Path();
-		FX.style(highlights, FxEditor.HIGHLIGHT);
+		FX.style(highlights, FxEditor.SELECTION_HIGHLIGHT);
 		highlights.setManaged(false);
 		highlights.setStroke(null);
 		highlights.setFill(Color.rgb(255, 255, 0));

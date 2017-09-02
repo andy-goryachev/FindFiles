@@ -147,7 +147,7 @@ public class NaiveFileReader
 				return text;
 			}
 
-			public LineBox getDecoratedLine()
+			public LineBox getLineBox()
 			{
 				return new LineBox().addText(new Text(text));
 			}
@@ -166,7 +166,7 @@ public class NaiveFileReader
 				return text;
 			}
 
-			public LineBox getDecoratedLine()
+			public LineBox getLineBox()
 			{
 				ElasticIntArray a = new ElasticIntArray();
 				

@@ -23,6 +23,7 @@ public class FxEditorLayout
 	private final int topLine;
 	private final CList<LineBox> lines = new CList<>();
 	private CMap<Integer,LineBox> newLines;
+	private double lineNumbersColumnWidth;
 	
 
 	public FxEditorLayout(FxEditor ed, int topLine)
@@ -70,6 +71,11 @@ public class FxEditorLayout
 		}
 		
 		LineBox line = lines.getLast();
+		if(line == null)
+		{
+			return Marker.ZERO;
+		}
+		
 		Region box = line.getCenter();
 		int len = 0;
 		if(box instanceof CTextFlow)
@@ -172,11 +178,11 @@ public class FxEditorLayout
 			b = getLineBox(ix);
 			if(b == null)
 			{
-				b = editor.getTextModel().getDecoratedLine(ix);
+				b = editor.getModel().getLineBox(ix);
 				b.init(ix);
 				
 				double h = editor.vflow.addAndComputePreferredHeight(b.getCenter());
-				b.setLineHeight(h);
+				b.setHeight(h);
 			}
 			
 			if(newLines == null)
@@ -186,6 +192,18 @@ public class FxEditorLayout
 			newLines.put(ix, b);
 		}
 			
-		return b.getLineHeight();
+		return b.getHeight();
+	}
+
+
+	public void setLineNumbersColumnWidth(double w)
+	{
+		lineNumbersColumnWidth = w;
+	}
+	
+	
+	public double getLineNumbersColumnWidth()
+	{
+		return lineNumbersColumnWidth;
 	}
 }
