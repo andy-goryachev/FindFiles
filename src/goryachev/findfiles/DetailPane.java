@@ -1,4 +1,4 @@
-// Copyright © 2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.findfiles;
 import goryachev.common.util.text.ZQuery;
 import goryachev.findfiles.search.FileEntry;

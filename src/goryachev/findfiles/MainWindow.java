@@ -1,4 +1,4 @@
-// Copyright © 2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.findfiles;
 import goryachev.fx.CAction;
 import goryachev.fx.CCheckMenuItem;
@@ -89,7 +89,7 @@ public class MainWindow
 		
 		p.add(FX.label(statusProperty, Color.GRAY));
 		p.fill();
-		p.add(FX.label("copyright © 2017 andy goryachev", Color.GRAY));
+		p.add(FX.label(Version.COPYRIGHT, Color.GRAY));
 		return p;
 	}
 	
