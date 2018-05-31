@@ -1,8 +1,9 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.CList;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
+import goryachev.fx.hacks.FxHacks;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

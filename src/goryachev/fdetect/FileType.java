@@ -1,8 +1,10 @@
-// Copyright © 2011-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2011-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fdetect;
 import goryachev.common.i18n.TXT;
+import goryachev.common.util.Keep;
 
 
+@Keep
 public enum FileType
 {
 	ASF

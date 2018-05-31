@@ -1,10 +1,18 @@
-// Copyright © 2012-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2012-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 
 
 /** String-based database identifier (key) */
 public class SKey
+	implements Cloneable
 {
+	public static interface Getter
+	{
+		public SKey getSKey();
+	}
+	
+	//
+	
 	private String key;
 	
 	
@@ -68,7 +76,7 @@ public class SKey
 	
 	public int hashCode()
 	{
-		return SKey.class.hashCode() ^ key.hashCode();
+		return FH.hash(SKey.class.hashCode(), key);
 	}
 
 

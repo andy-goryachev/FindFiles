@@ -1,14 +1,15 @@
-// Copyright © 2015-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2015-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import java.lang.ref.WeakReference;
 
 
 /** fx-like object property capable of dealing with normal and weak listeners. */
-public class CObjectProperty<T>
+public class CProperty<T>
 {
-	public interface Listener<T>
+	@FunctionalInterface
+	public static interface Listener<T>
 	{
-		public void onPropertyChange(T old, T cur);
+		public void onCPropertyChange(T old, T cur);
 	}
 	
 	//
@@ -17,13 +18,13 @@ public class CObjectProperty<T>
 	private CList<Object> listeners;
 	
 	
-	public CObjectProperty(T value)
+	public CProperty(T value)
 	{
 		set(value);
 	}
 	
 	
-	public CObjectProperty()
+	public CProperty()
 	{
 	}
 	
@@ -76,7 +77,7 @@ public class CObjectProperty<T>
 				{
 					try
 					{
-						((Listener)x).onPropertyChange(old, cur);
+						((Listener)x).onCPropertyChange(old, cur);
 					}
 					catch(Exception e)
 					{
@@ -138,6 +139,37 @@ public class CObjectProperty<T>
 		if(fireImmediately)
 		{
 			fireEvent(null, get());
+		}
+	}
+	
+	
+	public synchronized void removeListener(Listener<T> li)
+	{
+		if(listeners != null)
+		{
+			for(int i=listeners.size()-1; i>=0; i--)
+			{
+				Object x = listeners.get(i);
+				if(x == li)
+				{
+					listeners.remove(i);
+					return;
+				}
+				else if(x instanceof WeakReference)
+				{
+					Object w = ((WeakReference)x).get();
+					if(w == null)
+					{
+						listeners.remove(i);
+						continue;
+					}
+					else if(w == li)
+					{
+						listeners.remove(i);
+						return;
+					}
+				}
+			}
 		}
 	}
 }

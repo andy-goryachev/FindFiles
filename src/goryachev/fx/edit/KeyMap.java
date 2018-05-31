@@ -1,4 +1,4 @@
-// Copyright © 2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.CMap;
 import goryachev.common.util.CPlatform;
@@ -48,7 +48,7 @@ public class KeyMap
 	
 	public void shortcut(KeyCode k, Runnable r)
 	{
-		int flags = KEY_PRESSED | (CPlatform.get().isMac() ? META : CTRL);
+		int flags = KEY_PRESSED | (CPlatform.isMac() ? META : CTRL);
 		add(flags, k, r);
 	}
 	

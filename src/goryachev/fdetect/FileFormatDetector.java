@@ -1,4 +1,4 @@
-// Copyright © 2011-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2011-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fdetect;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
