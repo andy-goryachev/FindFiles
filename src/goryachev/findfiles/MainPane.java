@@ -7,11 +7,11 @@ import goryachev.findfiles.conf.Location;
 import goryachev.findfiles.conf.Locations;
 import goryachev.findfiles.search.FileEntry;
 import goryachev.findfiles.search.SearchThread;
-import goryachev.fx.CButton;
 import goryachev.fx.CComboBox;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;
+import goryachev.fx.FxButton;
 import goryachev.fx.FxDateFormatter;
 import goryachev.fx.FxDecimalFormatter;
 import goryachev.fx.FxThread;
@@ -38,7 +38,7 @@ public class MainPane
 	public final FxAction searchAction = new FxAction(this::startSearch);
 	public final CComboBox sourceField;
 	public final TextField searchField;
-	public final CButton searchButton;
+	public final FxButton searchButton;
 	public final Label progressField;
 	public final FxTable<FileEntry> table;
 	public final DetailPane detailPane;
@@ -62,7 +62,7 @@ public class MainPane
 		searchField = new TextField();
 		searchField.addEventHandler(KeyEvent.KEY_PRESSED, (ev) -> handleSearchKeyPress(ev));
 		
-		searchButton = new CButton("Search", searchAction);
+		searchButton = new FxButton("Search", searchAction);
 		
 		progressField = new Label();
 		
