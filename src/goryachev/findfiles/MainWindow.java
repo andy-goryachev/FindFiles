@@ -1,10 +1,10 @@
 // Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.findfiles;
-import goryachev.fx.CAction;
 import goryachev.fx.CCheckMenuItem;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
 import goryachev.fx.FX;
+import goryachev.fx.FxAction;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
@@ -22,8 +22,8 @@ import javafx.scene.paint.Color;
 public class MainWindow
 	extends FxWindow
 {
-	public final CAction copyAction = new CAction(this::copy);
-	public final static CAction newWindowAction = new CAction(MainWindow::newWindow);
+	public final FxAction copyAction = new FxAction(this::copy);
+	public final static FxAction newWindowAction = new FxAction(MainWindow::newWindow);
 	public final MainPane pane;
 	public final SimpleStringProperty statusProperty = new SimpleStringProperty();
 	
