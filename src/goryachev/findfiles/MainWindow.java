@@ -1,11 +1,10 @@
 // Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.findfiles;
-import goryachev.fx.CCheckMenuItem;
-import goryachev.fx.CMenu;
-import goryachev.fx.CMenuBar;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;
+import goryachev.fx.FxCheckMenuItem;
 import goryachev.fx.FxDump;
+import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
 import goryachev.fx.edit.FxEditor;
@@ -50,35 +49,34 @@ public class MainWindow
 	}
 	
 	
-	protected CMenuBar createMenu()
+	protected FxMenuBar createMenu()
 	{
-		CMenu m;
-		CMenuBar mb = new CMenuBar();
+		FxMenuBar m = new FxMenuBar();
 		// file
-		mb.add(m = new CMenu("FindFiles"));		
-		m.add("Search Locations");
+		m.menu("FindFiles");		
+		m.item("Search Locations");
 		m.separator();
-		m.add("New Window", newWindowAction);
+		m.item("New Window", newWindowAction);
 		m.separator();
-		m.add("Preferences");
+		m.item("Preferences");
 		m.separator();
-		m.add("Quit", FX.exitAction());
+		m.item("Quit", FX.exitAction());
 		// edit
-		mb.add(m = new CMenu("Edit"));
-		m.add("Copy", copyAction);
+		m.menu("Edit");
+		m.item("Copy", copyAction);
 		// view
-		mb.add(m = new CMenu("View"));
-		m.add(new CCheckMenuItem("Detail Pane Below", pane.horizontalSplit));
+		m.menu("View");
+		m.add(new FxCheckMenuItem("Detail Pane Below", pane.horizontalSplit));
 		// help
-		mb.add(m = new CMenu("Help"));
-		m.add("Check for Update");
-		m.add("Contact Support");
+		m.menu("Help");
+		m.item("Check for Update");
+		m.item("Contact Support");
 		m.separator();
-		m.add("License");
-		m.add("Open Source Licenses");
+		m.item("License");
+		m.item("Open Source Licenses");
 		m.separator();
-		m.add("About");
-		return mb;
+		m.item("About");
+		return m;
 	}
 	
 	

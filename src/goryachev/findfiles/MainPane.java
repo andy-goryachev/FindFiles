@@ -7,11 +7,11 @@ import goryachev.findfiles.conf.Location;
 import goryachev.findfiles.conf.Locations;
 import goryachev.findfiles.search.FileEntry;
 import goryachev.findfiles.search.SearchThread;
-import goryachev.fx.CComboBox;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;
 import goryachev.fx.FxButton;
+import goryachev.fx.FxComboBox;
 import goryachev.fx.FxDateFormatter;
 import goryachev.fx.FxDecimalFormatter;
 import goryachev.fx.FxThread;
@@ -36,7 +36,7 @@ public class MainPane
 	extends CPane
 {
 	public final FxAction searchAction = new FxAction(this::startSearch);
-	public final CComboBox sourceField;
+	public final FxComboBox sourceField;
 	public final TextField searchField;
 	public final FxButton searchButton;
 	public final Label progressField;
@@ -55,7 +55,7 @@ public class MainPane
 	{
 		this.statusProperty = statusProperty;
 		
-		sourceField = new CComboBox();
+		sourceField = new FxComboBox();
 		sourceField.setMinWidth(150);
 		sourceField.setPrefWidth(150);
 		
